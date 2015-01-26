@@ -1,5 +1,9 @@
 package com.nodrex.datamatrix;
 
+import java.io.Serializable;
+import java.util.Comparator;
+import java.util.List;
+
 /**
  * <p>
  * This interface contains useful methods which are implemented in DataMatrix
@@ -19,7 +23,7 @@ package com.nodrex.datamatrix;
  * 
  */
 public interface IDataMatrix<Data> extends Cloneable,
-		Comparable<IDataMatrix<Data>>, java.io.Serializable {
+		Comparable<IDataMatrix<Data>>, Serializable {
 
 	/**
 	 * Adds new column in to the end of this matrix.
@@ -68,7 +72,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 * @throws NullPointerException
 	 *             if given columnList is null.
 	 */
-	void addColumn(java.util.List<Data> columnList);
+	void addColumn(List<Data> columnList);
 
 	/**
 	 * Adds new line in to the end of this matrix.
@@ -113,7 +117,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 * @throws NullPointerException
 	 *             if given lineArray is null
 	 */
-	void addLine(java.util.List<Data> lineList);
+	void addLine(List<Data> lineList);
 
 	/**
 	 * Adds new matrix to the end of this matrix. Both matrix values will be
@@ -296,7 +300,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *             not unique and this kind of id already exists or id is null
 	 *             or empty.
 	 */
-	void changeContent(java.util.List<java.util.List<Data>> data, String name,
+	void changeContent(List<List<Data>> data, String name,
 			String id);
 
 	/**
@@ -330,7 +334,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 * @throws IllegalArgumentException
 	 *             if data is not filled at least with one element.
 	 */
-	void changeContent(java.util.List<java.util.List<Data>> data, String name);
+	void changeContent(List<List<Data>> data, String name);
 
 	/**
 	 * @param data
@@ -360,7 +364,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 * @throws IllegalArgumentException
 	 *             if data is not filled at least with one element.
 	 */
-	void changeContent(java.util.List<java.util.List<Data>> data);
+	void changeContent(List<List<Data>> data);
 
 	/**
 	 * Clears only data.</br>Name , id and dimensions are not touched.
@@ -384,7 +388,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 * @throws IllegalArgumentException
 	 *             if data is not filled at least with one element.
 	 */
-	void copy(java.util.List<java.util.List<Data>> data);
+	void copy(List<List<Data>> data);
 
 	/**
 	 * Copy values from given matrix.
@@ -453,7 +457,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *             if given columnIndex is out of this matrix column dimension
 	 *             range.
 	 */
-	java.util.List<Data> getColumnAsList(int columnIndex);
+	List<Data> getColumnAsList(int columnIndex);
 
 	/**
 	 * @return column dimension of this matrix.
@@ -463,7 +467,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	/**
 	 * @return column indexes of empty places (place which contains null).
 	 */
-	java.util.List<Integer> getColumnIndexesOfEmptyPlaces();
+	List<Integer> getColumnIndexesOfEmptyPlaces();
 
 	/**
 	 * @return data that is stored in this matrix.
@@ -473,7 +477,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	/**
 	 * @return data which will be stored in List.
 	 */
-	java.util.List<java.util.List<Data>> getDataAsList();
+	List<List<Data>> getDataAsList();
 
 	/**
 	 * @return diagonal on given place (index). If index is 0 then it will
@@ -483,7 +487,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             if index is not in matrix diagonal dimension range.
 	 */
-	java.util.List<Data> getDiagonal(int index);
+	List<Data> getDiagonal(int index);
 
 	/**
 	 * @return diagonal on given place (index) from right to left direction. If
@@ -494,7 +498,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 * @throws ArrayIndexOutOfBoundsException
 	 *             if index is not in matrix diagonal dimension range.
 	 */
-	java.util.List<Data> getDiagonal2(int index);
+	List<Data> getDiagonal2(int index);
 
 	/**
 	 * @return first value form this matrix which is not null.
@@ -533,7 +537,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *         GetIndexesOfEmptyPlaces.get(1) returns list of column indexes
 	 *         </p>
 	 */
-	java.util.List<java.util.List<Integer>> getIndexesOfEmptyPlaces();
+	List<List<Integer>> getIndexesOfEmptyPlaces();
 
 	/**
 	 * @return indexes of maximum value of this matrix. Comparable should be
@@ -552,7 +556,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *             if this matrix contains even one null or given comparator is
 	 *             null.
 	 */
-	int[] getIndexesOfMaxValue(java.util.Comparator<Data> comparator);
+	int[] getIndexesOfMaxValue(Comparator<Data> comparator);
 
 	/**
 	 * @return indexes of minimum value of this matrix. Comparable should be
@@ -572,7 +576,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *             if this matrix contains even one null or given comparator is
 	 *             null.
 	 */
-	int[] getIndexesOfMinValue(java.util.Comparator<Data> comparator);
+	int[] getIndexesOfMinValue(Comparator<Data> comparator);
 
 	/**
 	 * @return last element of this matrix.
@@ -597,7 +601,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *             if given lineIndex is out of this matrix line dimension
 	 *             range.
 	 */
-	java.util.List<Data> getLineAsList(int lineIndex);
+	List<Data> getLineAsList(int lineIndex);
 
 	/**
 	 * @return line dimension of this matrix.
@@ -607,7 +611,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	/**
 	 * @return line indexes of empty places (place which contains null).
 	 */
-	java.util.List<Integer> getLineIndexesOfEmptyPlaces();
+	List<Integer> getLineIndexesOfEmptyPlaces();
 
 	/**
 	 * @return main diagonal of this matrix.
@@ -617,7 +621,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	/**
 	 * @return main diagonal of this matrix with will be stored in List.
 	 */
-	java.util.List<Data> getMainDiagonalAsList();
+	List<Data> getMainDiagonalAsList();
 
 	/**
 	 * @return biggest dimension of this matrix.
@@ -642,7 +646,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *             if this matrix contains even one null or given comparator is
 	 *             null.
 	 */
-	Data getMaxValue(java.util.Comparator<Data> comparator);
+	Data getMaxValue(Comparator<Data> comparator);
 
 	/**
 	 * @return maximum value of column which locates on given index
@@ -669,8 +673,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *             if this matrix contains even one null or given comparator is
 	 *             null.
 	 */
-	Data getMaxValueOfColumn(int columnIndex,
-			java.util.Comparator<Data> comparator);
+	Data getMaxValueOfColumn(int columnIndex, Comparator<Data> comparator);
 
 	/**
 	 * @return maximum value of line which locates on given index (lineIndex).
@@ -696,7 +699,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *             if this matrix contains even one null or given comparator is
 	 *             null.
 	 */
-	Data getMaxValueOfLine(int lineIndex, java.util.Comparator<Data> comparator);
+	Data getMaxValueOfLine(int lineIndex, Comparator<Data> comparator);
 
 	/**
 	 * @return smallest dimension of this matrix.
@@ -722,7 +725,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *             null.
 	 * @throws ClassCastException
 	 */
-	Data getMinValue(java.util.Comparator<Data> comparator);
+	Data getMinValue(Comparator<Data> comparator);
 
 	/**
 	 * @return minimum value of column which locates on given index
@@ -749,8 +752,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *             if this matrix contains even one null or given comparator is
 	 *             null.
 	 */
-	Data getMinValueOfColumn(int columnIndex,
-			java.util.Comparator<Data> comparator);
+	Data getMinValueOfColumn(int columnIndex, Comparator<Data> comparator);
 
 	/**
 	 * @return minimum value of line which locates on given index (lineIndex).
@@ -776,7 +778,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *             if this matrix contains even one null or given comparator is
 	 *             null.
 	 */
-	Data getMinValueOfLine(int lineIndex, java.util.Comparator<Data> comparator);
+	Data getMinValueOfLine(int lineIndex, Comparator<Data> comparator);
 
 	/**
 	 * @return name of this matrix.
@@ -796,7 +798,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	/**
 	 * @return second diagonal of this matrix with will be stored in List.
 	 */
-	java.util.List<Data> getSecondDiagonalAsList();
+	List<Data> getSecondDiagonalAsList();
 
 	/**
 	 * @return value form the given place.
@@ -885,7 +887,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 * @throws NullPointerException
 	 *             if given columnList is null.
 	 */
-	void insertColumn(int index, java.util.List<Data> columnList);
+	void insertColumn(int index, List<Data> columnList);
 
 	/**
 	 * Inserts given data in this matrix in the given place (lineIndex) ,
@@ -950,7 +952,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *             if given data is null.
 	 */
 	void insertData(int lineIndex, int columnIndex,
-			java.util.List<java.util.List<Data>> data);
+			List<List<Data>> data);
 
 	/**
 	 * Inserts given value in any place that you want.
@@ -1016,7 +1018,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *             if given lineList or columnList or both is null.
 	 */
 	void insertElement(int lineIndex, int columnIndex, Data value,
-			java.util.List<Data> lineList, java.util.List<Data> columnList);
+			List<Data> lineList, List<Data> columnList);
 
 	/**
 	 * Inserts line in any places that you want.
@@ -1094,7 +1096,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 * @throws NullPointerException
 	 *             if given lineList is null.
 	 */
-	void insertLine(int index, java.util.List<Data> lineList);
+	void insertLine(int index, List<Data> lineList);
 
 	/**
 	 * Inserts given matrix in this matrix in the given place (lineIndex) ,
@@ -1472,7 +1474,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 * @throws NullPointerException
 	 *             if given columnList is null.
 	 */
-	void setColumn(int columnIndex, java.util.List<Data> columnList);
+	void setColumn(int columnIndex, List<Data> columnList);
 
 	/**
 	 * Fills column on given place (index) with given value.
@@ -1510,7 +1512,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 * @throws IllegalArgumentException
 	 *             if data is not filled at least with one element.
 	 */
-	void setData(java.util.List<java.util.List<Data>> data);
+	void setData(List<List<Data>> data);
 
 	/**
 	 * Fills diagonal on given place (index). If index is 0 then it will fill
@@ -1582,7 +1584,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 * @throws NullPointerException
 	 *             if given lineList is null.
 	 */
-	void setLine(int lineIndex, java.util.List<Data> lineList);
+	void setLine(int lineIndex, List<Data> lineList);
 
 	/**
 	 * Fills line on given place (index) with given value.
@@ -1632,7 +1634,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 * @throws NullPointerException
 	 *             if diagonalList is null.
 	 */
-	void setMainDiagonal(java.util.List<Data> diagonalList);
+	void setMainDiagonal(List<Data> diagonalList);
 
 	/**
 	 * Sets name to this matrix.
@@ -1682,7 +1684,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 * @throws NullPointerException
 	 *             if diagonalList is null.
 	 */
-	void setSecondDiagonal(java.util.List<Data> diagonalList);
+	void setSecondDiagonal(List<Data> diagonalList);
 
 	/**
 	 * Sets value to the given place.
@@ -1712,7 +1714,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *             if index is out of this matrix dimension range.
 	 * @throws NullPointerException
 	 */
-	void sortColumn(int index, java.util.Comparator<Data> comparator);
+	void sortColumn(int index, Comparator<Data> comparator);
 
 	/**
 	 * Sorts this matrix column which locates on given index by descending
@@ -1750,7 +1752,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *             if this matrix contains even one null or given comparator is
 	 *             null.
 	 */
-	void sortLine(int index, java.util.Comparator<Data> comparator);
+	void sortLine(int index, Comparator<Data> comparator);
 
 	/**
 	 * Sorts this matrix line which locates on given index by descending order.
@@ -1784,7 +1786,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *             if this matrix contains even one null or given comparator is
 	 *             null.
 	 */
-	void sortColumns(java.util.Comparator<Data> comparator);
+	void sortColumns(Comparator<Data> comparator);
 
 	/**
 	 * Sorts all columns of this matrix by descending order. Comparable should
@@ -1817,7 +1819,7 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 *             if this matrix contains even one null or given comparator is
 	 *             null.
 	 */
-	void sortLines(java.util.Comparator<Data> comparator);
+	void sortLines(Comparator<Data> comparator);
 
 	/**
 	 * Sorts all lines of this matrix by descending order. Comparable should be
@@ -1915,13 +1917,13 @@ public interface IDataMatrix<Data> extends Cloneable,
 	 * @return list from this matrix, it means that: All lines will be located
 	 *         side by side together in list started from first line.
 	 */
-	java.util.List<Data> toList();
+	List<Data> toList();
 
 	/**
 	 * @return list from this matrix, it means that: All columns will be located
 	 *         side by side together in list started from first column.
 	 */
-	java.util.List<Data> toListByColumn();
+	List<Data> toListByColumn();
 
 	/**
 	 * Transpose this matrix.

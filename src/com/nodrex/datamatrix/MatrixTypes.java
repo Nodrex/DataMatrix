@@ -1,5 +1,7 @@
 package com.nodrex.datamatrix;
 
+import java.io.Serializable;
+
 /**
  * <p>
  * This enum contains type of matrices
@@ -13,6 +15,6 @@ package com.nodrex.datamatrix;
  * @since 2013
  * 
  */
-public enum MatrixTypes implements java.io.Serializable {
+public enum MatrixTypes implements Serializable {
 	scalar, vector, columnVector, matrix, zero, eye, ones, hilbert
 };

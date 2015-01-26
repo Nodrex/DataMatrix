@@ -1,5 +1,10 @@
 package com.nodrex.datamatrix;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
 /**
  * <p>
  * This class contains useful methods to manipulate on data of matrix type.
@@ -45,7 +50,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	protected int columndimension;
 	protected String name = "";
 	protected String id = "";
-	protected static final java.util.List<String> ids = new java.util.ArrayList<String>();
+	protected static final List<String> ids = new ArrayList<String>();
 
 	/**
 	 * @return copy of this matrix.
@@ -73,11 +78,12 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	 * tempDataMatrix.data;</br> tempDataMatrix = null;</br> System.gc();</br>
 	 * </p>
 	 */
-	@SuppressWarnings("unchecked")
 	protected void changeContentQuickly(IDataMatrix<Data> tempDataMatrix) {
 		this.linedimension = tempDataMatrix.getLineDimension();
 		this.columndimension = tempDataMatrix.getColumnDimension();
-		this.data = (Data[][]) tempDataMatrix.getData();
+		//this.data = (Data[][]) tempDataMatrix.getData();
+		//I guess for quick change there should be :
+		this.data = ((DataMatrix<Data>)tempDataMatrix).data;
 		tempDataMatrix = null;
 		System.gc();
 	}
@@ -223,8 +229,8 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private java.util.List toList(Data... data) {
-		java.util.List tempList = new java.util.ArrayList(data.length);
+	private List toList(Data... data) {
+		List tempList = new ArrayList(data.length);
 		for (int i = 0; i < data.length; i++) {
 			tempList.add(data[i]);
 		}
@@ -232,8 +238,8 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	}
 
 	@SuppressWarnings("unchecked")
-	private java.util.List<Data> toParameterizedList(Object... data) {
-		java.util.List<Data> tempList = new java.util.ArrayList<Data>(
+	private List<Data> toParameterizedList(Object... data) {
+		List<Data> tempList = new ArrayList<Data>(
 				data.length);
 		for (int i = 0; i < data.length; i++) {
 			tempList.add((Data) data[i]);
@@ -300,7 +306,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	}
 
 	private void fillLeftLines(int oldLineDimension, int index,
-			java.util.List<Data> lineList) {
+			List<Data> lineList) {
 		if (index < oldLineDimension && index >= 0)
 			return;
 		if (index < 0) {
@@ -349,7 +355,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	}
 
 	private void fillLeftColumns(int oldColumnDimension, int index,
-			java.util.List<Data> columnList) {
+			List<Data> columnList) {
 		if (index < oldColumnDimension && index >= 0)
 			return;
 		if (index < 0) {
@@ -376,7 +382,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 
 	private void fillTempDataMatrixWithGivenDataOnGivenIndexes(
 			DataMatrix<Data> tempDataMatrix,
-			java.util.List<java.util.List<Data>> data, int lineIndex,
+			List<List<Data>> data, int lineIndex,
 			int columnIndex) {
 		for (int i = 0, helpi = lineIndex; i < data.size(); i++, helpi++) {
 			for (int j = 0, helpj = columnIndex; j < data.get(i).size(); j++, helpj++) {
@@ -530,12 +536,12 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	 */
 	@SuppressWarnings("unchecked")
 	public DataMatrix(Data[]... data) throws NullPointerException {
-		java.util.List<Integer> lengthList = new java.util.ArrayList<Integer>(
+		List<Integer> lengthList = new ArrayList<Integer>(
 				data.length);
 		for (int i = 0; i < data.length; i++) {
 			lengthList.add(data[i].length);
 		}
-		init(data.length, java.util.Collections.max(lengthList));
+		init(data.length, Collections.max(lengthList));
 		fill(data);
 	}
 
@@ -556,7 +562,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	 * @throws IllegalArgumentException
 	 *             if data is not filled at least with one element.
 	 */
-	public DataMatrix(java.util.List<java.util.List<Data>> data)
+	public DataMatrix(List<List<Data>> data)
 			throws NullPointerException, IllegalArgumentException {
 		copy(data);
 	}
@@ -721,6 +727,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	}
 
 	public Object[][] getData() {
+		//correct will be return this.data and other code should be commented
 		Object[][] newData = new Object[this.linedimension][this.columndimension];
 		for (int i = 0; i < this.linedimension; i++) {
 			for (int j = 0; j < this.columndimension; j++) {
@@ -732,17 +739,19 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 
 	@SuppressWarnings("unchecked")
 	public void setData(Data[]... data) throws NullPointerException {
-		java.util.List<Integer> lengthList = new java.util.ArrayList<Integer>(
+		List<Integer> lengthList = new ArrayList<Integer>(
 				data.length);
 		for (int i = 0; i < data.length; i++) {
 			lengthList.add(data[i].length);
 		}
-		init(data.length, java.util.Collections.max(lengthList));
+		init(data.length, Collections.max(lengthList));
+		//i think here should be this.data = data;
+		//this.fill(data) should be commented.
 		this.fill(data);
 		System.gc();
 	}
 
-	public void setData(java.util.List<java.util.List<Data>> data)
+	public void setData(List<List<Data>> data)
 			throws NullPointerException, IllegalArgumentException {
 		copy(data);
 	}
@@ -816,7 +825,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		this.setId(id);
 	}
 
-	public void changeContent(java.util.List<java.util.List<Data>> data,
+	public void changeContent(List<List<Data>> data,
 			String name, String id) throws NullPointerException,
 			IllegalArgumentException {
 		copy(data);
@@ -830,7 +839,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		this.name = name;
 	}
 
-	public void changeContent(java.util.List<java.util.List<Data>> data,
+	public void changeContent(List<List<Data>> data,
 			String name) throws NullPointerException, IllegalArgumentException {
 		this.copy(data);
 		this.name = name;
@@ -841,7 +850,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		this.changeContent(data, this.name);
 	}
 
-	public void changeContent(java.util.List<java.util.List<Data>> data)
+	public void changeContent(List<List<Data>> data)
 			throws NullPointerException, IllegalArgumentException {
 		this.changeContent(data, this.name);
 	}
@@ -913,12 +922,12 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		resize(squareDimension, squareDimension, defaultValue);
 	}
 
-	public java.util.List<java.util.List<Data>> getDataAsList() {
-		java.util.List<java.util.List<Data>> listDataMatrix = new java.util.ArrayList<java.util.List<Data>>(
+	public List<List<Data>> getDataAsList() {
+		List<List<Data>> listDataMatrix = new ArrayList<List<Data>>(
 				this.linedimension);
-		java.util.List<Data> innerlist = null;
+		List<Data> innerlist = null;
 		for (int i = 0; i < this.linedimension; i++) {
-			innerlist = new java.util.ArrayList<Data>(this.columndimension);
+			innerlist = new ArrayList<Data>(this.columndimension);
 			for (int j = 0; j < this.columndimension; j++) {
 				innerlist.add(this.data[i][j]);
 			}
@@ -927,17 +936,17 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		return listDataMatrix;
 	}
 
-	public void copy(java.util.List<java.util.List<Data>> data)
+	public void copy(List<List<Data>> data)
 			throws NullPointerException, IllegalArgumentException {
 		if (data.size() == 0) {
 			throw new IllegalArgumentException(ExceptionMessages.PLEASE_FILL);
 		}
-		java.util.List<Integer> lengthList = new java.util.ArrayList<Integer>(
+		List<Integer> lengthList = new ArrayList<Integer>(
 				data.size());
 		for (int i = 0; i < data.size(); i++) {
 			lengthList.add(data.get(i).size());
 		}
-		init(data.size(), java.util.Collections.max(lengthList));
+		init(data.size(), Collections.max(lengthList));
 		for (int i = 0; i < data.size(); i++) {
 			for (int j = 0; j < data.get(i).size(); j++) {
 				this.data[i][j] = data.get(i).get(j);
@@ -973,7 +982,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		setLine(this.linedimension - 1, defaultvalue);
 	}
 
-	public void addLine(java.util.List<Data> lineList)
+	public void addLine(List<Data> lineList)
 			throws NullPointerException {
 		addLine();
 		setLine(this.linedimension - 1, lineList);
@@ -1001,7 +1010,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		setColumn(this.columndimension - 1, defaultvalue);
 	}
 
-	public void addColumn(java.util.List<Data> columnList)
+	public void addColumn(List<Data> columnList)
 			throws NullPointerException {
 		addColumn();
 		setColumn(this.columndimension - 1, columnList);
@@ -1059,7 +1068,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		fillLeftLines(oldLineDimension, index, lineArray);
 	}
 
-	public void insertLine(int index, java.util.List<Data> lineList)
+	public void insertLine(int index, List<Data> lineList)
 			throws NullPointerException {
 		int oldLineDimension = this.linedimension;
 		insertLine(index);
@@ -1133,7 +1142,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		fillLeftColumns(oldColumnDimension, index, columnArray);
 	}
 
-	public void insertColumn(int index, java.util.List<Data> columnList)
+	public void insertColumn(int index, List<Data> columnList)
 			throws NullPointerException {
 		int oldColumnDimension = this.columndimension;
 		insertColumn(index);
@@ -1220,7 +1229,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	}
 
 	public void insertElement(int lineIndex, int columnIndex, Data value,
-			java.util.List<Data> lineList, java.util.List<Data> columnList)
+			List<Data> lineList, List<Data> columnList)
 			throws NullPointerException {
 		if (lineIndex >= this.getLineDimension()
 				&& columnIndex < this.getColumnDimension()) {
@@ -1262,12 +1271,12 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		int newLineDimension = this.linedimension;
 		int newColumnDimension = this.columndimension;
 		DataMatrix<Data> tempDataMatrix = null;
-		java.util.List<Integer> sizeList = new java.util.ArrayList<Integer>(
+		List<Integer> sizeList = new ArrayList<Integer>(
 				data.length);
 		for (int i = 0; i < data.length; i++) {
 			sizeList.add(data[i].length);
 		}
-		int parameterMatrixMaxColumnDimension = java.util.Collections
+		int parameterMatrixMaxColumnDimension = Collections
 				.max(sizeList);
 
 		if (isIndexes(lineIndex, columnIndex)) {
@@ -1326,7 +1335,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	}
 
 	public void insertData(int lineIndex, int columnIndex,
-			java.util.List<java.util.List<Data>> data)
+			List<List<Data>> data)
 			throws IllegalArgumentException, NullPointerException {
 		if (lineIndex < 0 || columnIndex < 0) {
 			throw new IllegalArgumentException(ExceptionMessages.NON_NEGATIVE);
@@ -1334,12 +1343,12 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		int newLineDimension = this.linedimension;
 		int newColumnDimension = this.columndimension;
 		DataMatrix<Data> tempDataMatrix = null;
-		java.util.List<Integer> sizeList = new java.util.ArrayList<Integer>(
+		List<Integer> sizeList = new ArrayList<Integer>(
 				data.size());
 		for (int i = 0; i < data.size(); i++) {
 			sizeList.add(data.get(i).size());
 		}
-		int parameterMatrixMaxColumnDimension = java.util.Collections
+		int parameterMatrixMaxColumnDimension = Collections
 				.max(sizeList);
 
 		if (isIndexes(lineIndex, columnIndex)) {
@@ -1406,7 +1415,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		return newarray;
 	}
 
-	public java.util.List<Data> getLineAsList(int lineIndex)
+	public List<Data> getLineAsList(int lineIndex)
 			throws ArrayIndexOutOfBoundsException {
 		return toParameterizedList(getLine(lineIndex));
 	}
@@ -1420,7 +1429,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		}
 	}
 
-	public void setLine(int lineIndex, java.util.List<Data> lineList)
+	public void setLine(int lineIndex, List<Data> lineList)
 			throws ArrayIndexOutOfBoundsException, NullPointerException {
 		checkLineIndex(lineIndex);
 		for (int i = 0; i < Math.min(this.columndimension, lineList.size()); i++) {
@@ -1445,7 +1454,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		return columnarray;
 	}
 
-	public java.util.List<Data> getColumnAsList(int columnIndex)
+	public List<Data> getColumnAsList(int columnIndex)
 			throws ArrayIndexOutOfBoundsException {
 		return toParameterizedList(getColumn(columnIndex));
 	}
@@ -1458,7 +1467,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 			data[i][columnIndex] = columnArray[i];
 	}
 
-	public void setColumn(int columnIndex, java.util.List<Data> columnList)
+	public void setColumn(int columnIndex, List<Data> columnList)
 			throws ArrayIndexOutOfBoundsException, NullPointerException {
 		checkColumnIndex(columnIndex);
 		for (int i = 0; i < Math.min(this.linedimension, columnList.size()); i++)
@@ -1706,8 +1715,8 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 			throws IllegalArgumentException, NullPointerException {
 		if (data_1 == null || data_2 == null)
 			throw new NullPointerException();
-		java.util.List<Integer> dataindexes_1 = new java.util.ArrayList<Integer>();
-		java.util.List<Integer> dataindexes_2 = new java.util.ArrayList<Integer>();
+		List<Integer> dataindexes_1 = new ArrayList<Integer>();
+		List<Integer> dataindexes_2 = new ArrayList<Integer>();
 		for (int i = 0; i < this.linedimension; i++) {
 			for (int j = 0; j < this.columndimension; j++) {
 				if (this.data[i][j].equals(data_1)) {
@@ -1745,7 +1754,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		}
 	}
 
-	public void setMainDiagonal(java.util.List<Data> diagonalList)
+	public void setMainDiagonal(List<Data> diagonalList)
 			throws NullPointerException {
 		for (int i = 0; i < Math.min(this.getMinDimension(),
 				diagonalList.size()); i++) {
@@ -1815,7 +1824,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		}
 	}
 
-	public void setSecondDiagonal(java.util.List<Data> diagonalList)
+	public void setSecondDiagonal(List<Data> diagonalList)
 			throws NullPointerException {
 		for (int i = 0; i < Math.min(this.getMinDimension(),
 				diagonalList.size()); i++) {
@@ -1824,9 +1833,9 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		}
 	}
 
-	public java.util.List<Data> getDiagonal(int index)
+	public List<Data> getDiagonal(int index)
 			throws ArrayIndexOutOfBoundsException {
-		java.util.List<Data> diag = new java.util.ArrayList<Data>();
+		List<Data> diag = new ArrayList<Data>();
 		if (index >= 0 && index < this.getColumnDimension()) {
 			for (int i = 0; i < this.getLineDimension(); i++) {
 				if (this.isIndexes(i, index + i)) {
@@ -1847,9 +1856,9 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		throw new ArrayIndexOutOfBoundsException(ExceptionMessages.INDEX);
 	}
 
-	public java.util.List<Data> getDiagonal2(int index)
+	public List<Data> getDiagonal2(int index)
 			throws ArrayIndexOutOfBoundsException {
-		java.util.List<Data> diag = new java.util.ArrayList<Data>();
+		List<Data> diag = new ArrayList<Data>();
 		if (index >= 0 && index < this.getColumnDimension()) {
 			for (int i = 0; i < this.getLineDimension(); i++) {
 				if (this.isIndexes(i, this.getColumnDimension() - 1 - index - i)) {
@@ -1879,7 +1888,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		return newArray;
 	}
 
-	public java.util.List<Data> getMainDiagonalAsList() {
+	public List<Data> getMainDiagonalAsList() {
 		return toParameterizedList(getMainDiagonal());
 	}
 
@@ -1891,7 +1900,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		return newArray;
 	}
 
-	public java.util.List<Data> getSecondDiagonalAsList() {
+	public List<Data> getSecondDiagonalAsList() {
 		return toParameterizedList(getSecondDiagonal());
 	}
 
@@ -2062,24 +2071,24 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Data getMaxValue() throws NullPointerException, ClassCastException {
 		checkIfImplementsComparable();
-		java.util.List maxVariablesOfLines = new java.util.ArrayList(
+		List maxVariablesOfLines = new ArrayList(
 				this.linedimension);
 		for (int i = 0; i < this.linedimension; i++)
-			maxVariablesOfLines.add(java.util.Collections
+			maxVariablesOfLines.add(Collections
 					.max(toList(this.data[i])));
-		return (Data) java.util.Collections.max(maxVariablesOfLines);
+		return (Data) Collections.max(maxVariablesOfLines);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Data getMaxValue(java.util.Comparator<Data> comparator)
+	public Data getMaxValue(Comparator<Data> comparator)
 			throws NullPointerException, ClassCastException {
-		java.util.List maxVariablesOfLines = new java.util.ArrayList(
+		List maxVariablesOfLines = new ArrayList(
 				this.linedimension);
 		for (int i = 0; i < this.linedimension; i++) {
-			maxVariablesOfLines.add(java.util.Collections.max(
+			maxVariablesOfLines.add(Collections.max(
 					toList(this.data[i]), comparator));
 		}
-		return (Data) java.util.Collections
+		return (Data) Collections
 				.max(maxVariablesOfLines, comparator);
 	}
 
@@ -2088,34 +2097,34 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 			ClassCastException {
 		checkIfImplementsComparable();
 		int[] maxIndexes = new int[2];
-		java.util.List maxVariablesOfLines = new java.util.ArrayList(
+		List maxVariablesOfLines = new ArrayList(
 				this.linedimension);
 		for (int i = 0; i < this.linedimension; i++) {
-			maxVariablesOfLines.add(java.util.Collections
+			maxVariablesOfLines.add(Collections
 					.max(toList(this.data[i])));
 		}
-		maxIndexes[0] = maxVariablesOfLines.indexOf(java.util.Collections
+		maxIndexes[0] = maxVariablesOfLines.indexOf(Collections
 				.max(maxVariablesOfLines));
-		java.util.List tempListForColumIndex = toList(this.data[maxIndexes[0]]);
-		maxIndexes[1] = tempListForColumIndex.indexOf(java.util.Collections
+		List tempListForColumIndex = toList(this.data[maxIndexes[0]]);
+		maxIndexes[1] = tempListForColumIndex.indexOf(Collections
 				.max(tempListForColumIndex));
 		return maxIndexes;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public int[] getIndexesOfMaxValue(java.util.Comparator<Data> comparator)
+	public int[] getIndexesOfMaxValue(Comparator<Data> comparator)
 			throws NullPointerException, ClassCastException {
 		int[] maxIndexes = new int[2];
-		java.util.List maxVariablesOfLines = new java.util.ArrayList(
+		List maxVariablesOfLines = new ArrayList(
 				this.linedimension);
 		for (int i = 0; i < this.linedimension; i++) {
-			maxVariablesOfLines.add(java.util.Collections.max(
+			maxVariablesOfLines.add(Collections.max(
 					toList(this.data[i]), comparator));
 		}
-		maxIndexes[0] = maxVariablesOfLines.indexOf(java.util.Collections.max(
+		maxIndexes[0] = maxVariablesOfLines.indexOf(Collections.max(
 				maxVariablesOfLines, comparator));
-		java.util.List tempListForColumIndex = toList(this.data[maxIndexes[0]]);
-		maxIndexes[1] = tempListForColumIndex.indexOf(java.util.Collections
+		List tempListForColumIndex = toList(this.data[maxIndexes[0]]);
+		maxIndexes[1] = tempListForColumIndex.indexOf(Collections
 				.max(tempListForColumIndex, comparator));
 		return maxIndexes;
 	}
@@ -2123,25 +2132,25 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Data getMinValue() throws NullPointerException, ClassCastException {
 		checkIfImplementsComparable();
-		java.util.List minVariablesOfLines = new java.util.ArrayList(
+		List minVariablesOfLines = new ArrayList(
 				this.linedimension);
 		for (int i = 0; i < this.linedimension; i++) {
-			minVariablesOfLines.add(java.util.Collections
+			minVariablesOfLines.add(Collections
 					.min(toList(this.data[i])));
 		}
-		return (Data) java.util.Collections.min(minVariablesOfLines);
+		return (Data) Collections.min(minVariablesOfLines);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public Data getMinValue(java.util.Comparator<Data> comparator)
+	public Data getMinValue(Comparator<Data> comparator)
 			throws NullPointerException, ClassCastException {
-		java.util.List minVariablesOfLines = new java.util.ArrayList(
+		List minVariablesOfLines = new ArrayList(
 				this.linedimension);
 		for (int i = 0; i < this.linedimension; i++) {
-			minVariablesOfLines.add(java.util.Collections.min(
+			minVariablesOfLines.add(Collections.min(
 					toList(this.data[i]), comparator));
 		}
-		return (Data) java.util.Collections
+		return (Data) Collections
 				.min(minVariablesOfLines, comparator);
 	}
 
@@ -2150,34 +2159,34 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 			ClassCastException {
 		checkIfImplementsComparable();
 		int[] minIndexes = new int[2];
-		java.util.List minVariablesOfLines = new java.util.ArrayList(
+		List minVariablesOfLines = new ArrayList(
 				this.linedimension);
 		for (int i = 0; i < this.linedimension; i++) {
-			minVariablesOfLines.add(java.util.Collections
+			minVariablesOfLines.add(Collections
 					.min(toList(this.data[i])));
 		}
-		minIndexes[0] = minVariablesOfLines.indexOf(java.util.Collections
+		minIndexes[0] = minVariablesOfLines.indexOf(Collections
 				.min(minVariablesOfLines));
-		java.util.List tempListForColumIndex = toList(this.data[minIndexes[0]]);
-		minIndexes[1] = tempListForColumIndex.indexOf(java.util.Collections
+		List tempListForColumIndex = toList(this.data[minIndexes[0]]);
+		minIndexes[1] = tempListForColumIndex.indexOf(Collections
 				.min(tempListForColumIndex));
 		return minIndexes;
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public int[] getIndexesOfMinValue(java.util.Comparator<Data> comparator)
+	public int[] getIndexesOfMinValue(Comparator<Data> comparator)
 			throws NullPointerException, ClassCastException {
 		int[] minIndexes = new int[2];
-		java.util.List minVariablesOfLines = new java.util.ArrayList(
+		List minVariablesOfLines = new ArrayList(
 				this.linedimension);
 		for (int i = 0; i < this.linedimension; i++) {
-			minVariablesOfLines.add(java.util.Collections.min(
+			minVariablesOfLines.add(Collections.min(
 					toList(this.data[i]), comparator));
 		}
-		minIndexes[0] = minVariablesOfLines.indexOf(java.util.Collections.min(
+		minIndexes[0] = minVariablesOfLines.indexOf(Collections.min(
 				minVariablesOfLines, comparator));
-		java.util.List tempListForColumIndex = toList(this.data[minIndexes[0]]);
-		minIndexes[1] = tempListForColumIndex.indexOf(java.util.Collections
+		List tempListForColumIndex = toList(this.data[minIndexes[0]]);
+		minIndexes[1] = tempListForColumIndex.indexOf(Collections
 				.min(tempListForColumIndex, comparator));
 		return minIndexes;
 	}
@@ -2188,16 +2197,16 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 			NullPointerException {
 		checkLineIndex(lineIndex);
 		checkIfImplementsComparable(this.data[lineIndex][0]);
-		return (Data) java.util.Collections.max(toList(this.data[lineIndex]));
+		return (Data) Collections.max(toList(this.data[lineIndex]));
 	}
 
 	@SuppressWarnings("unchecked")
 	public Data getMaxValueOfLine(int lineIndex,
-			java.util.Comparator<Data> comparator)
+			Comparator<Data> comparator)
 			throws ArrayIndexOutOfBoundsException, NullPointerException,
 			ClassCastException {
 		checkLineIndex(lineIndex);
-		return (Data) java.util.Collections.max(toList(this.data[lineIndex]),
+		return (Data) Collections.max(toList(this.data[lineIndex]),
 				comparator);
 	}
 
@@ -2207,16 +2216,16 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 			NullPointerException {
 		checkLineIndex(lineIndex);
 		checkIfImplementsComparable(this.data[lineIndex][0]);
-		return (Data) java.util.Collections.min(toList(this.data[lineIndex]));
+		return (Data) Collections.min(toList(this.data[lineIndex]));
 	}
 
 	@SuppressWarnings("unchecked")
 	public Data getMinValueOfLine(int lineIndex,
-			java.util.Comparator<Data> comparator)
+			Comparator<Data> comparator)
 			throws ArrayIndexOutOfBoundsException, NullPointerException,
 			ClassCastException {
 		checkLineIndex(lineIndex);
-		return (Data) java.util.Collections.min(toList(this.data[lineIndex]),
+		return (Data) Collections.min(toList(this.data[lineIndex]),
 				comparator);
 	}
 
@@ -2226,26 +2235,26 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 			NullPointerException {
 		checkColumnIndex(columnIndex);
 		checkIfImplementsComparable(this.data[0][columnIndex]);
-		java.util.List tempColumnList = new java.util.ArrayList(
+		List tempColumnList = new ArrayList(
 				this.columndimension);
 		for (int i = 0; i < this.linedimension; i++) {
 			tempColumnList.add(this.data[i][columnIndex]);
 		}
-		return (Data) java.util.Collections.max(tempColumnList);
+		return (Data) Collections.max(tempColumnList);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Data getMaxValueOfColumn(int columnIndex,
-			java.util.Comparator<Data> comparator)
+			Comparator<Data> comparator)
 			throws ArrayIndexOutOfBoundsException, NullPointerException,
 			ClassCastException {
 		checkColumnIndex(columnIndex);
-		java.util.List tempColumnList = new java.util.ArrayList(
+		List tempColumnList = new ArrayList(
 				this.columndimension);
 		for (int i = 0; i < this.linedimension; i++) {
 			tempColumnList.add(this.data[i][columnIndex]);
 		}
-		return (Data) java.util.Collections.max(tempColumnList, comparator);
+		return (Data) Collections.max(tempColumnList, comparator);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -2254,26 +2263,26 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 			NullPointerException {
 		checkColumnIndex(columnIndex);
 		checkIfImplementsComparable(this.data[0][columnIndex]);
-		java.util.List tempColumnList = new java.util.ArrayList(
+		List tempColumnList = new ArrayList(
 				this.columndimension);
 		for (int i = 0; i < this.linedimension; i++) {
 			tempColumnList.add(this.data[i][columnIndex]);
 		}
-		return (Data) java.util.Collections.min(tempColumnList);
+		return (Data) Collections.min(tempColumnList);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public Data getMinValueOfColumn(int columnIndex,
-			java.util.Comparator<Data> comparator)
+			Comparator<Data> comparator)
 			throws ArrayIndexOutOfBoundsException, NullPointerException,
 			ClassCastException {
 		checkColumnIndex(columnIndex);
-		java.util.List tempColumnList = new java.util.ArrayList(
+		List tempColumnList = new ArrayList(
 				this.columndimension);
 		for (int i = 0; i < this.linedimension; i++) {
 			tempColumnList.add(this.data[i][columnIndex]);
 		}
-		return (Data) java.util.Collections.min(tempColumnList, comparator);
+		return (Data) Collections.min(tempColumnList, comparator);
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -2281,20 +2290,20 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 			NullPointerException, ClassCastException {
 		checkLineIndex(index);
 		checkIfImplementsComparable(this.data[index][0]);
-		java.util.List tempList = toList(this.data[index]);
-		java.util.Collections.sort(tempList);
+		List tempList = toList(this.data[index]);
+		Collections.sort(tempList);
 		for (int i = 0; i < this.columndimension; i++) {
 			this.data[index][i] = (Data) tempList.get(i);
 		}
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void sortLine(int index, java.util.Comparator<Data> comparator)
+	public void sortLine(int index, Comparator<Data> comparator)
 			throws ArrayIndexOutOfBoundsException, NullPointerException,
 			ClassCastException {
 		checkLineIndex(index);
-		java.util.List tempList = toList(this.data[index]);
-		java.util.Collections.sort(tempList, comparator);
+		List tempList = toList(this.data[index]);
+		Collections.sort(tempList, comparator);
 		for (int i = 0; i < this.columndimension; i++) {
 			this.data[index][i] = (Data) tempList.get(i);
 		}
@@ -2305,9 +2314,9 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 			NullPointerException, ClassCastException {
 		checkLineIndex(index);
 		checkIfImplementsComparable(this.data[index][0]);
-		java.util.List tempList = toList(this.data[index]);
-		java.util.Collections.sort(tempList);
-		java.util.Collections.reverse(tempList);
+		List tempList = toList(this.data[index]);
+		Collections.sort(tempList);
+		Collections.reverse(tempList);
 		for (int i = 0; i < this.columndimension; i++) {
 			this.data[index][i] = (Data) tempList.get(i);
 		}
@@ -2318,26 +2327,26 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 			NullPointerException, ClassCastException {
 		checkColumnIndex(index);
 		checkIfImplementsComparable(this.data[0][index]);
-		java.util.List tempList = new java.util.ArrayList(this.columndimension);
+		List tempList = new ArrayList(this.columndimension);
 		for (int i = 0; i < this.linedimension; i++) {
 			tempList.add(this.data[i][index]);
 		}
-		java.util.Collections.sort(tempList);
+		Collections.sort(tempList);
 		for (int i = 0; i < this.linedimension; i++) {
 			this.data[i][index] = (Data) tempList.get(i);
 		}
 	}
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public void sortColumn(int index, java.util.Comparator<Data> comparator)
+	public void sortColumn(int index, Comparator<Data> comparator)
 			throws ArrayIndexOutOfBoundsException, NullPointerException,
 			ClassCastException {
 		checkColumnIndex(index);
-		java.util.List tempList = new java.util.ArrayList(this.columndimension);
+		List tempList = new ArrayList(this.columndimension);
 		for (int i = 0; i < this.linedimension; i++) {
 			tempList.add(this.data[i][index]);
 		}
-		java.util.Collections.sort(tempList, comparator);
+		Collections.sort(tempList, comparator);
 		for (int i = 0; i < this.linedimension; i++) {
 			this.data[i][index] = (Data) tempList.get(i);
 		}
@@ -2349,12 +2358,12 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 			ClassCastException {
 		checkColumnIndex(index);
 		checkIfImplementsComparable(this.data[0][index]);
-		java.util.List tempList = new java.util.ArrayList(this.columndimension);
+		List tempList = new ArrayList(this.columndimension);
 		for (int i = 0; i < this.linedimension; i++) {
 			tempList.add(this.data[i][index]);
 		}
-		java.util.Collections.sort(tempList);
-		java.util.Collections.reverse(tempList);
+		Collections.sort(tempList);
+		Collections.reverse(tempList);
 		for (int i = 0; i < this.linedimension; i++) {
 			this.data[i][index] = (Data) tempList.get(i);
 		}
@@ -2366,7 +2375,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		}
 	}
 
-	public void sortLines(java.util.Comparator<Data> comparator)
+	public void sortLines(Comparator<Data> comparator)
 			throws NullPointerException, ClassCastException {
 		for (int i = 0; i < this.linedimension; i++) {
 			sortLine(i, comparator);
@@ -2386,7 +2395,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		}
 	}
 
-	public void sortColumns(java.util.Comparator<Data> comparator)
+	public void sortColumns(Comparator<Data> comparator)
 			throws NullPointerException, ClassCastException {
 		for (int i = 0; i < this.columndimension; i++) {
 			sortColumn(i, comparator);
@@ -2400,8 +2409,8 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		}
 	}
 
-	public java.util.List<Data> toList() {
-		java.util.List<Data> list = new java.util.ArrayList<Data>();
+	public List<Data> toList() {
+		List<Data> list = new ArrayList<Data>();
 		for (int i = 0; i < this.data.length; i++) {
 			for (int j = 0; j < this.data[i].length; j++) {
 				list.add(this.data[i][j]);
@@ -2410,8 +2419,8 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		return list;
 	}
 
-	public java.util.List<Data> toListByColumn() {
-		java.util.List<Data> list = new java.util.ArrayList<Data>();
+	public List<Data> toListByColumn() {
+		List<Data> list = new ArrayList<Data>();
 		for (int i = 0; i < this.columndimension; i++) {
 			for (int j = 0; j < this.linedimension; j++) {
 				list.add(this.data[j][i]);
@@ -2444,8 +2453,8 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		throw new NullPointerException(ExceptionMessages.EVERYTHING_IS_NULL);
 	}
 
-	public java.util.List<Integer> getLineIndexesOfEmptyPlaces() {
-		java.util.List<Integer> lineIndexlist = new java.util.ArrayList<Integer>();
+	public List<Integer> getLineIndexesOfEmptyPlaces() {
+		List<Integer> lineIndexlist = new ArrayList<Integer>();
 		for (int i = 0; i < this.linedimension; i++) {
 			for (int j = 0; j < this.columndimension; j++) {
 				if (this.data[i][j] == null) {
@@ -2456,8 +2465,8 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		return lineIndexlist;
 	}
 
-	public java.util.List<Integer> getColumnIndexesOfEmptyPlaces() {
-		java.util.List<Integer> columnIndexlist = new java.util.ArrayList<Integer>();
+	public List<Integer> getColumnIndexesOfEmptyPlaces() {
+		List<Integer> columnIndexlist = new ArrayList<Integer>();
 		for (int i = 0; i < this.linedimension; i++) {
 			for (int j = 0; j < this.columndimension; j++) {
 				if (this.data[i][j] == null) {
@@ -2468,9 +2477,9 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		return columnIndexlist;
 	}
 
-	public java.util.List<java.util.List<Integer>> getIndexesOfEmptyPlaces() {
-		java.util.List<Integer> lineIndexlist = new java.util.ArrayList<Integer>();
-		java.util.List<Integer> columnIndexlist = new java.util.ArrayList<Integer>();
+	public List<List<Integer>> getIndexesOfEmptyPlaces() {
+		List<Integer> lineIndexlist = new ArrayList<Integer>();
+		List<Integer> columnIndexlist = new ArrayList<Integer>();
 		for (int i = 0; i < this.linedimension; i++) {
 			for (int j = 0; j < this.columndimension; j++) {
 				if (this.data[i][j] == null) {
@@ -2479,7 +2488,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 				}
 			}
 		}
-		java.util.List<java.util.List<Integer>> indexes = new java.util.ArrayList<java.util.List<Integer>>(
+		List<List<Integer>> indexes = new ArrayList<List<Integer>>(
 				2);
 		indexes.add(lineIndexlist);
 		indexes.add(columnIndexlist);
@@ -2593,9 +2602,9 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	 * @throws NullPointerException
 	 *             if some elements in given list are null.
 	 */
-	public static <Data> void sortAsc(java.util.List<IDataMatrix<Data>> dataList)
+	public static <Data> void sortAsc(List<IDataMatrix<Data>> dataList)
 			throws NullPointerException, ClassCastException {
-		java.util.Collections.sort(dataList);
+		Collections.sort(dataList);
 	}
 
 	/**
@@ -2609,10 +2618,10 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	 *             if some elements in given list are null or comparator is
 	 *             null.
 	 */
-	public static <Data> void sort(java.util.List<DataMatrix<Data>> dataList,
-			java.util.Comparator<DataMatrix<Data>> comparator)
+	public static <Data> void sort(List<DataMatrix<Data>> dataList,
+			Comparator<DataMatrix<Data>> comparator)
 			throws NullPointerException, ClassCastException {
-		java.util.Collections.sort(dataList, comparator);
+		Collections.sort(dataList, comparator);
 	}
 
 	/**
@@ -2623,10 +2632,10 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	 *             if some elements in given list are null.
 	 */
 	public static <Data> void sortDesc(
-			java.util.List<IDataMatrix<Data>> dataList)
+			List<IDataMatrix<Data>> dataList)
 			throws NullPointerException, ClassCastException {
-		java.util.Collections.sort(dataList);
-		java.util.Collections.reverse(dataList);
+		Collections.sort(dataList);
+		Collections.reverse(dataList);
 	}
 
 	/**
@@ -2636,8 +2645,8 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	 *         original value will not be changed.
 	 *         </p>
 	 */
-	public static java.util.List<String> getIds() {
-		return new java.util.ArrayList<String>(DataMatrix.ids);
+	public static List<String> getIds() {
+		return new ArrayList<String>(DataMatrix.ids);
 	}
 
 	/**
@@ -2660,7 +2669,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 
 //defaultFill metodi unda iyos final radgan konstruqtorhis da bagebi ro avicilot tavidan
 //changeContentQuickly metodi unda iyos final igive mizezebis gamo
-//copy(java.util.List<java.util.List<Data>> data) metoidic unda iyos final
+//copy(List<List<Data>> data) metoidic unda iyos final
 //klasebis dokumentaciashi davamato romel jdk zea dawerili. yvela klasisi dokumentaciashi unda davamato. esaa dawerili 1.7 ze.
 //Datamatrix shi equals metodidan null ze exceptionis srola wavshalo da false davabrunebino da shesabamisad dokumentaciac unda shevcvalo.
 

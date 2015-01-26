@@ -1,5 +1,11 @@
 package com.nodrex.datamatrix;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+import java.util.Scanner;
+
 /**
  * <p>
  * This class contains useful methods to manipulate on data of mathematic matrix
@@ -147,7 +153,7 @@ public class Matrix extends DataMatrix<Double> {
 	 * @throws NullPointerException
 	 *             if given data is null.
 	 */
-	public Matrix(java.util.List<java.util.List<Double>> data)
+	public Matrix(List<List<Double>> data)
 			throws NullPointerException, IllegalArgumentException {
 		super(data);
 	}
@@ -235,12 +241,12 @@ public class Matrix extends DataMatrix<Double> {
 		this(fileName, ' ');
 	}
 
-	private static java.util.List<java.util.List<Double>> readFromFile(
+	private static List<List<Double>> readFromFile(
 			String fileName, String separator) throws NumberFormatException,
 			IllegalArgumentException, java.io.FileNotFoundException {
-		java.util.List<String> list = new java.util.ArrayList<String>();
+		List<String> list = new ArrayList<String>();
 		java.io.File file = new java.io.File(fileName);
-		java.util.Scanner scanner = new java.util.Scanner(file);
+		Scanner scanner = new Scanner(file);
 		while (scanner.hasNextLine()) {
 			String str = scanner.nextLine();
 			list.add(str);
@@ -250,10 +256,10 @@ public class Matrix extends DataMatrix<Double> {
 			throw new IllegalArgumentException(
 					MatrixExceptionMessages.READ_DATA_FROM_FILE);
 		}
-		java.util.List<java.util.List<Double>> dataList = new java.util.ArrayList<java.util.List<Double>>();
+		List<List<Double>> dataList = new ArrayList<List<Double>>();
 		for (int i = 0; i < list.size(); i++) {
 			String[] separated = list.get(i).split(separator);
-			java.util.List<Double> data = new java.util.ArrayList<Double>();
+			List<Double> data = new ArrayList<Double>();
 			for (int j = 0; j < separated.length; j++) {
 				data.add(Double.parseDouble(separated[j]));
 			}
@@ -264,12 +270,12 @@ public class Matrix extends DataMatrix<Double> {
 
 	private static int getMaxColumnDimension(int lineDimension,
 			String... defaultValues) {
-		java.util.List<Integer> columnDimensionsList = new java.util.ArrayList<>(
+		List<Integer> columnDimensionsList = new ArrayList<>(
 				lineDimension);
 		for (int i = 0; i < lineDimension; i++) {
 			columnDimensionsList.add(defaultValues[i].split(",").length);
 		}
-		return java.util.Collections.max(columnDimensionsList);
+		return Collections.max(columnDimensionsList);
 	}
 
 	private void checkDimensionsForCalculations(Matrix matrix)
@@ -661,7 +667,7 @@ public class Matrix extends DataMatrix<Double> {
 	public double norm1() {
 		Matrix m = new Matrix(this);
 		m.abs();
-		java.util.List<Double> lastarray = new java.util.ArrayList<Double>(
+		List<Double> lastarray = new ArrayList<Double>(
 				this.columndimension);
 		double sum = 0;
 		for (int i = 0; i < this.columndimension; i++) {
@@ -679,7 +685,7 @@ public class Matrix extends DataMatrix<Double> {
 			}
 			return lastSum;
 		}
-		return java.util.Collections.max(lastarray);
+		return Collections.max(lastarray);
 	}
 
 	/**
@@ -699,10 +705,10 @@ public class Matrix extends DataMatrix<Double> {
 		Matrix m = new Matrix(this);
 		m.abs();
 		if (m.isVector())
-			return java.util.Collections.max(m.getLineAsList(0));
+			return Collections.max(m.getLineAsList(0));
 		if (m.isColumnVector())
-			return java.util.Collections.max(m.getColumnAsList(0));
-		java.util.List<Double> lastarray = new java.util.ArrayList<Double>(
+			return Collections.max(m.getColumnAsList(0));
+		List<Double> lastarray = new ArrayList<Double>(
 				this.linedimension);
 		double sum = 0;
 		for (int i = 0; i < this.linedimension; i++) {
@@ -713,7 +719,7 @@ public class Matrix extends DataMatrix<Double> {
 			lastarray.add(sum);
 			sum = 0;
 		}
-		return java.util.Collections.max(lastarray);
+		return Collections.max(lastarray);
 	}
 
 	/**
@@ -1068,7 +1074,7 @@ public class Matrix extends DataMatrix<Double> {
 	public static Matrix random(int linedimension, int columndimension)
 			throws IllegalArgumentException {
 		Matrix m = new Matrix(linedimension, columndimension);
-		java.util.Random random = new java.util.Random();
+		Random random = new Random();
 		for (int i = 0; i < m.linedimension; i++) {
 			for (int j = 0; j < m.columndimension; j++) {
 				m.setValue(i, j, random.nextDouble());
@@ -1093,7 +1099,7 @@ public class Matrix extends DataMatrix<Double> {
 	 *         filled with random numbers.
 	 */
 	public static Matrix random() {
-		java.util.Random random = new java.util.Random();
+		Random random = new Random();
 		int lineDimension = random.nextInt();
 		lineDimension = lineDimension > 5 ? 5 : lineDimension;
 		int columnDimension = random.nextInt();
@@ -1113,7 +1119,7 @@ public class Matrix extends DataMatrix<Double> {
 			int start, int end) throws IllegalArgumentException {
 		if (end <= start)
 			throw new IllegalArgumentException(MatrixExceptionMessages.RANDOM);
-		java.util.Random r = new java.util.Random();
+		Random r = new Random();
 		Matrix m = new Matrix(linedimension, columndimension);
 		for (int i = 0; i < m.linedimension; i++) {
 			for (int j = 0; j < m.columndimension; j++) {
@@ -1143,7 +1149,7 @@ public class Matrix extends DataMatrix<Double> {
 	 */
 	public static Matrix randomIn(int start, int end)
 			throws IllegalArgumentException {
-		java.util.Random random = new java.util.Random();
+		Random random = new Random();
 		int lineDimension = random.nextInt();
 		lineDimension = lineDimension > 5 ? 5 : lineDimension;
 		int columnDimension = random.nextInt();
