@@ -1354,6 +1354,8 @@ public class Matrix extends DataMatrix<Double> {
 		
 		System.out.println(solveLinearSystem);
 		
+		System.out.println("test");	
+		
 	}
 	
 }
