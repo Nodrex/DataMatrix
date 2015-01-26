@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<class-diagram version="1.1.4" icons="true" automaticImage="PNG" always-add-relationships="false" generalizations="true" 
+  realizations="true" associations="true" dependencies="false" nesting-relationships="true">  
+  <interface id="1" language="java" name="com.nodrex.datamatrix.IDataMatrix" project="datamatrix" 
+    file="/datamatrix/src/com/nodrex/datamatrix/IDataMatrix.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="2943" width="325" x="-28" y="-1310"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </interface>  
+  <class id="2" language="java" name="com.nodrex.datamatrix.DataMatrix" project="datamatrix" 
+    file="/datamatrix/src/com/nodrex/datamatrix/DataMatrix.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="658" y="408"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <interface id="3" language="java" name="com.nodrex.datamatrix.DataMatrix.ExceptionMessages" project="datamatrix" 
+    file="/datamatrix/src/com/nodrex/datamatrix/DataMatrix.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1058" y="595"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </interface>  
+  <interface id="4" language="java" name="com.nodrex.datamatrix.Matrix.MatrixExceptionMessages" project="datamatrix" 
+    file="/datamatrix/src/com/nodrex/datamatrix/Matrix.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1523" y="-569"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </interface>  
+  <class id="5" language="java" name="com.nodrex.datamatrix.Matrix" project="datamatrix" 
+    file="/datamatrix/src/com/nodrex/datamatrix/Matrix.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1129" y="-571"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </class>  
+  <enumeration id="6" language="java" name="com.nodrex.datamatrix.MatrixTypes" project="datamatrix" 
+    file="/datamatrix/src/com/nodrex/datamatrix/MatrixTypes.java" binary="false" corner="BOTTOM_RIGHT">    
+    <position height="-1" width="-1" x="1445" y="-1187"/>    
+    <display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" accessors="true" 
+      visibility="true">      
+      <attributes public="true" package="true" protected="true" private="false" static="true"/>      
+      <operations public="true" package="true" protected="true" private="false" static="true"/>    
+    </display>  
+  </enumeration>  
+  <nesting id="7">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="3"/>  
+  </nesting>  
+  <generalization id="8">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="2"/>  
+  </generalization>  
+  <realization id="9">    
+    <end type="SOURCE" refId="2"/>    
+    <end type="TARGET" refId="1"/>  
+  </realization>  
+  <nesting id="10">    
+    <end type="SOURCE" refId="5"/>    
+    <end type="TARGET" refId="4"/>  
+  </nesting>  
+  <classifier-display autosize="true" stereotype="true" package="true" initial-value="false" signature="true" 
+    accessors="true" visibility="true">    
+    <attributes public="true" package="true" protected="true" private="false" static="true"/>    
+    <operations public="true" package="true" protected="true" private="false" static="true"/>  
+  </classifier-display>  
+  <association-display labels="true" multiplicity="true"/>
+</class-diagram>
