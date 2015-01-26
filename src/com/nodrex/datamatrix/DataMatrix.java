@@ -63,8 +63,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	 * Removes id of this matrix form ids list.
 	 */
 	protected void finalize() throws Throwable {
-		if (this.id.equals(""))
-			return;
+		if (this.id.equals("")) return;
 		DataMatrix.ids.remove(this.id);
 	}
 
@@ -117,12 +116,9 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	 * 
 	 * @return true if both matrixes have same dimension and same data,
 	 *         otherwise returns false.
-	 * @throws NullPointerException
-	 *             if given parameter is null.
 	 */
-	public boolean equals(Object obj) throws NullPointerException {
-		if (obj == null)
-			throw new NullPointerException();
+	public boolean equals(Object obj) {
+		if (obj == null) return false;
 		if (obj instanceof DataMatrix) {
 			try {
 				@SuppressWarnings("unchecked")
@@ -726,6 +722,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		return new String(this.id);
 	}
 
+	//getData_s magivrad sxva rame unda gavaketo , romelic monacemebs daakopirebs. aman imena am obietis data unda daabrunos.
 	public Object[][] getData() {
 		//correct will be return this.data and other code should be commented
 		Object[][] newData = new Object[this.linedimension][this.columndimension];
@@ -744,6 +741,7 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		for (int i = 0; i < data.length; i++) {
 			lengthList.add(data[i].length);
 		}
+		//TODO imis magivrad , rom mere maxi davutvalo pirvelive iteraciashive unda davitvalo maxi. am shemtxevashi listis shemnac ar iqneba sachiro
 		init(data.length, Collections.max(lengthList));
 		//i think here should be this.data = data;
 		//this.fill(data) should be commented.
