@@ -7,3 +7,5 @@ determinant , norm , minor , cofactor , solveLienarSystem , arithmetic operation
 
  My favorite method is solveLinearSystem, which is in Matrix class and allows to simply solve linear equation system. \
  Matrix class also have more useful mathematic methods, suth as determinant, minor, norm, plus, minus , divide , multiplay and more ...
+
+ #For documentation, please visit: http://nodrex.github.io/DataMatrix/
