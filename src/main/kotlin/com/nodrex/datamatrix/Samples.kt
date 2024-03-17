@@ -4,7 +4,7 @@ fun main(args: Array<String>) {
     println("Hello World!")
 
 
-    val m = Matrix.create(MatrixTypes.vector, 3)
+    val m = Matrix.create(MatrixTypes.eye, 3)
 
     println("Matrix: $m")
 
