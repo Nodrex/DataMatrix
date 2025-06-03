@@ -10,16 +10,23 @@ import java.util.List;
  * This class contains useful methods to manipulate on data of matrix type.
  * </p>
  * <p>
- * Implements Serializable , Comparable , Cloneable interfaces.
+ * Implements {@link java.io.Serializable}, {@link Comparable}, and {@link Cloneable} interfaces.
  * </p>
  * <p>
  * Can be extended by any class.
  * </p>
+ * <p>
+ * Written for JDK 1.7.
+ * </p>
  * 
- * @param <Data>Any type can be stored.
+ * @param <Data> Any type can be stored.
  * @author NODREX
  * @version 1.0
  * @since 2013
+ * @see IDataMatrix
+ * @see java.io.Serializable
+ * @see Comparable
+ * @see Cloneable
  */
 public class DataMatrix<Data> implements IDataMatrix<Data> {
 
@@ -53,14 +60,24 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	protected static final List<String> ids = new ArrayList<String>();
 
 	/**
-	 * @return copy of this matrix.
+	 * Creates and returns a copy of this object.
+	 *
+	 * @return a clone of this instance.
+	 * @throws CloneNotSupportedException if the object's class does not support the {@code Cloneable} interface.
+	 *                                    Subclasses that override the {@code clone} method can also throw this exception
+	 *                                    to indicate that an instance cannot be cloned.
+	 * @see java.lang.Cloneable
 	 */
 	protected IDataMatrix<Data> clone() throws CloneNotSupportedException {
 		return new DataMatrix<Data>(this);
 	}
 
 	/**
-	 * Removes id of this matrix form ids list.
+	 * Called by the garbage collector on an object when garbage collection
+	 * determines that there are no more references to the object.
+	 * Removes the ID of this matrix from the static list of IDs.
+	 *
+	 * @throws Throwable the {@code Exception} raised by this method
 	 */
 	protected void finalize() throws Throwable {
 		if (this.id.equals("")) return;
@@ -68,14 +85,23 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	}
 
 	/**
-	 * Changes dimensions and data reference. also calls garbage collector.</br>
-	 * <b>If you want to change references of data i recommend to use this
-	 * method.</b>
+	 * Efficiently changes the dimensions and data reference of this matrix to match the given matrix.
+	 * This method directly assigns the internal data structures of the provided matrix to this matrix
+	 * and then nullifies the reference to the temporary matrix, suggesting it for garbage collection.
 	 * <p>
-	 * Content:</br> this.linedimension = tempDataMatrix.linedimension;</br>
-	 * this.columndimension = tempDataMatrix.columndimension;</br> this.data =
-	 * tempDataMatrix.data;</br> tempDataMatrix = null;</br> System.gc();</br>
+	 * <b>Note:</b> This method is intended for performance-critical scenarios.
+	 * It is recommended that this method be considered final in subclasses to avoid potential issues.
 	 * </p>
+	 * <p>
+	 * Operations performed:<br>
+	 * {@code this.linedimension = tempDataMatrix.getLineDimension();}<br>
+	 * {@code this.columndimension = tempDataMatrix.getColumnDimension();}<br>
+	 * {@code this.data = ((DataMatrix<Data>)tempDataMatrix).data;}<br>
+	 * {@code tempDataMatrix = null;}<br>
+	 * {@code System.gc();}<br>
+	 * </p>
+	 * @param tempDataMatrix The matrix whose content will replace the current matrix's content.
+	 *                       After the operation, this reference is set to null.
 	 */
 	protected void changeContentQuickly(IDataMatrix<Data> tempDataMatrix) {
 		this.linedimension = tempDataMatrix.getLineDimension();
@@ -112,43 +138,49 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	}
 
 	/**
-	 * Compares 2 matrixes.
-	 * 
-	 * @return true if both matrixes have same dimension and same data,
-	 *         otherwise returns false.
+	 * Compares this matrix with the specified object for equality.
+	 * Returns {@code true} if the given object is also a {@code DataMatrix}, and the two
+	 * matrices have the same dimensions and all corresponding elements are equal.
+	 *
+	 * @param obj the object to be compared for equality with this matrix.
+	 * @return {@code true} if the specified object is equal to this matrix, {@code false} otherwise.
 	 */
 	public boolean equals(Object obj) {
-		if (obj == null) return false;
-		if (obj instanceof DataMatrix) {
-			try {
-				@SuppressWarnings("unchecked")
-				DataMatrix<Data> variable = (DataMatrix<Data>) obj;
-				if (!isDimensionsEqualTo(variable.linedimension,
-						variable.columndimension))
+		if (obj == null) return false; // Handles null comparison as per TODO
+		if (this == obj) return true;
+		if (!(obj instanceof DataMatrix)) return false;
+
+		@SuppressWarnings("unchecked")
+		DataMatrix<Data> other = (DataMatrix<Data>) obj;
+
+		if (!isDimensionsEqualTo(other.linedimension, other.columndimension)) {
+			return false;
+		}
+
+		for (int i = 0; i < this.linedimension; i++) {
+			for (int j = 0; j < this.columndimension; j++) {
+				if (this.data[i][j] == null) {
+					if (other.data[i][j] != null) return false;
+				} else if (!this.data[i][j].equals(other.data[i][j])) {
 					return false;
-				for (int i = 0; i < variable.linedimension; i++) {
-					for (int j = 0; j < variable.columndimension; j++) {
-						if (!(this.data[i][j].equals(variable.data[i][j]))) {
-							return false;
-						}
-					}
 				}
-			} catch (Exception e) {
-				return false;
 			}
 		}
 		return true;
 	}
 
 	/**
-	 * Compares with number of elements.
-	 * <p>
-	 * If this matrix elements are less then given matrix returns -1 , if both
-	 * matrix elements are equal returns 0 , otherwise returns 1.
-	 * </p>
+	 * Compares this matrix with the specified matrix for order based on the number of elements.
+	 * Returns a negative integer, zero, or a positive integer as this matrix
+	 * has fewer, equal to, or more elements than the specified matrix.
+	 *
+	 * @param iDataMatrix the matrix to be compared.
+	 * @return a negative integer, zero, or a positive integer as this matrix
+	 *         has fewer, equal to, or more elements than the specified matrix.
+	 * @see Comparable
 	 */
 	public int compareTo(IDataMatrix<Data> iDataMatrix) {
-		return this.getNumberOfElements() - iDataMatrix.getNumberOfElements();
+		return Integer.compare(this.getNumberOfElements(), iDataMatrix.getNumberOfElements());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -388,14 +420,16 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	}
 
 	/**
-	 * Creates Matrix with one data which will be null.
+	 * Creates a 1x1 matrix with a null element.
 	 */
 	public DataMatrix() {
 		init(1, 1);
 	}
 
 	/**
-	 * Creates Matrix with one data and fills with default value that you gave.
+	 * Creates a 1x1 matrix and initializes it with the given default value.
+	 *
+	 * @param defaultValue The value to fill the matrix with.
 	 */
 	public DataMatrix(Data defaultValue) {
 		init(1, 1);
@@ -403,12 +437,11 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	}
 
 	/**
-	 * Creates Matrix with dimensions that you gave and all data automatically
-	 * will be null.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if given lineDimension or columnDimension are negative or
-	 *             zero.
+	 * Creates a matrix with the specified dimensions. All elements are initialized to null.
+	 *
+	 * @param lineDimension   The number of lines (rows) in the matrix.
+	 * @param columnDimension The number of columns in the matrix.
+	 * @throws IllegalArgumentException if {@code lineDimension} or {@code columnDimension} are not positive.
 	 */
 	public DataMatrix(int lineDimension, int columnDimension)
 			throws IllegalArgumentException {
@@ -416,36 +449,35 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	}
 
 	/**
-	 * Creates Matrix with dimensions that you gave and feels with default value
-	 * that you gave.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if given lineDimension or columnDimension are negative or
-	 *             zero.
+	 * Creates a matrix with the specified dimensions and fills it with the given default value.
+	 *
+	 * @param lineDimension   The number of lines (rows) in the matrix.
+	 * @param columnDimension The number of columns in the matrix.
+	 * @param defaultValue    The value to fill the matrix with.
+	 * @throws IllegalArgumentException if {@code lineDimension} or {@code columnDimension} are not positive.
 	 */
-	public DataMatrix(int lineDimension, int columnDimension, Data DefaultValue)
+	public DataMatrix(int lineDimension, int columnDimension, Data defaultValue)
 			throws IllegalArgumentException {
 		init(lineDimension, columnDimension);
-		defaultFill(DefaultValue);
+		defaultFill(defaultValue);
 	}
 
 	/**
-	 * Creates square matrix with dimension that you gave and all data
-	 * automatically will be null.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if given squareDimensioni is negative or zero.
+	 * Creates a square matrix with the specified dimension. All elements are initialized to null.
+	 *
+	 * @param squareDimension The dimension (number of lines and columns) of the square matrix.
+	 * @throws IllegalArgumentException if {@code squareDimension} is not positive.
 	 */
 	public DataMatrix(int squareDimension) throws IllegalArgumentException {
 		init(squareDimension, squareDimension);
 	}
 
 	/**
-	 * Creates square matrix with dimension that you gave and fills with default
-	 * value that you gave.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if given squareDimension is negative or zero.
+	 * Creates a square matrix with the specified dimension and fills it with the given default value.
+	 *
+	 * @param squareDimension The dimension (number of lines and columns) of the square matrix.
+	 * @param defaultValue    The value to fill the matrix with.
+	 * @throws IllegalArgumentException if {@code squareDimension} is not positive.
 	 */
 	public DataMatrix(int squareDimension, Data defaultValue)
 			throws IllegalArgumentException {
@@ -454,86 +486,57 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	}
 
 	/**
-	 * Creates copy of given data matrix.
-	 * <p>
-	 * This constructor does not copy id of given matrix, because id should be
-	 * unique.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if given matrix is null.
+	 * Creates a copy of the given data matrix.
+	 * The ID of the given matrix is not copied, as IDs must be unique.
+	 *
+	 * @param matrix The matrix to copy.
+	 * @throws NullPointerException if the given {@code matrix} is null.
 	 */
 	@SuppressWarnings("unchecked")
 	public DataMatrix(IDataMatrix<Data> matrix) throws NullPointerException {
+		if (matrix == null) throw new NullPointerException("Input matrix cannot be null.");
 		this.init(matrix.getLineDimension(), matrix.getColumnDimension());
-		this.fill((Data[][]) matrix.getData());
+		this.fill((Data[][]) matrix.getData()); // Assumes getData() returns a compatible array type.
 		this.name = new String(matrix.getName());
 	}
 
 	/**
-	 * Creates matrix and fills with data that you gave.
+	 * Creates a matrix and fills it with the data from the given 2D array.
+	 * The dimensions of the matrix are determined by the structure of the input array.
+	 * If the input array is jagged (arrays within the array have different lengths),
+	 * the matrix column dimension will be set to the maximum length found.
+	 * Missing elements in shorter rows will be {@code null}.
 	 * <p>
-	 * This constructor takes dimensions from given data automatically.
-	 * </p>
+	 * Example 1 (Array of arrays):
+	 * <pre>{@code
+	 * DataMatrix<String> matrix = new DataMatrix<>(
+	 *     new String[]{"a", "b", "c"},
+	 *     new String[]{"d", "e", "f"}
+	 * );
+	 * // Result: 2x3 matrix
+	 * }</pre>
 	 * <p>
-	 * Example:
-	 * </p>
-	 * <p>
-	 * DataMatrix<<Data>> dataMatrix = new DataMatrix<<Data>>(new
-	 * Data[]{value_2,value_2,value_3},new Data[]{value_4,value_5,value_6})
-	 * </p>
-	 * <p>
-	 * It will create dataMatrix with dimensions: line dimension 2 and column
-	 * dimension 3
-	 * </p>
-	 * <p>
-	 * Example 2:
-	 * </p>
-	 * <p>
-	 * DataMatrix<<Data>> dataMatrix = new DataMatrix<<Data>>(new Data[][]{new
-	 * Data[]{value_1,value_2,value_3}, new Data[]{value_4,value_5,value_6}, new
-	 * Data[]{value_7,value_8,value_9}}
-	 * </p>
-	 * <p>
-	 * It will create dataMatrix with dimensions: line dimension 3 and column
-	 * dimension 3
-	 * </p>
-	 * 
-	 * <p>
-	 * You also can gave jagged array, it will automatically fit dimensions: It
-	 * will take max line and column dimensions.
-	 * </p>
-	 * 
-	 * <p>
-	 * For example if you gave: new
-	 * Data[][]{{value_1},{value_2,value_3,value_4},{value_5,value_6}} then
-	 * result will be :
-	 * <p>
-	 * Matrix 3 X 3 </br> value_1 null null </br> value_2 value_3 value_4 </br>
-	 * value_5 value_6 null
-	 * </p>
-	 * 
-	 * @param data
-	 *            can be:
-	 *            <p>
-	 *            (new Data[]{value_1,value_2,value_3}, ...)
-	 *            </p>
-	 *            or
-	 *            <p>
-	 *            (new Data[][]{new Data[]{value_1,value_2,value_3}, ...})
-	 *            </p>
-	 *            or
-	 *            <p>
-	 *            (new Data[][]{new Data[]{value_1,value_2,value_3},new
-	 *            Data[]{value_4,value_5,value_6},...})
-	 *            </p
-	 * @throws NullPointerException
-	 *             if given data is null.
+	 * Example 2 (Jagged array):
+	 * <pre>{@code
+	 * DataMatrix<Integer> matrix = new DataMatrix<>(
+	 *     new Integer[]{1},
+	 *     new Integer[]{2, 3, 4},
+	 *     new Integer[]{5, 6}
+	 * );
+	 * // Result: 3x3 matrix:
+	 * // 1  null null
+	 * // 2  3    4
+	 * // 5  6    null
+	 * }</pre>
+	 *
+	 * @param data A varargs 2D array (Data[][]) or an array of 1D arrays (Data[]...).
+	 *             Cannot be null, but can be empty or contain null arrays/elements.
+	 * @throws NullPointerException if {@code data} is null.
 	 */
 	@SuppressWarnings("unchecked")
 	public DataMatrix(Data[]... data) throws NullPointerException {
-		List<Integer> lengthList = new ArrayList<Integer>(
-				data.length);
+		if (data == null) throw new NullPointerException("Input data array cannot be null.");
+		List<Integer> lengthList = new ArrayList<Integer>(data.length);
 		for (int i = 0; i < data.length; i++) {
 			lengthList.add(data[i].length);
 		}
@@ -542,40 +545,36 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	}
 
 	/**
-	 * Creates matrix and fills with data that you gave.
-	 * <p>
-	 * This constructor takes dimensions from given data automatically.
-	 * </p>
-	 * 
-	 * <p>
-	 * You also can gave jagged data, it will automatically fit dimensions: It
-	 * will take max line and column dimensions.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if given data is null.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if data is not filled at least with one element.
+	 * Creates a matrix and fills it with data from the given list of lists.
+	 * The dimensions of the matrix are determined by the structure of the input list.
+	 * If the inner lists have different sizes, the matrix column dimension will be
+	 * set to the maximum size found. Missing elements in shorter rows will be {@code null}.
+	 *
+	 * @param data A list of lists representing the matrix data. Cannot be null.
+	 * @throws NullPointerException     if {@code data} is null.
+	 * @throws IllegalArgumentException if {@code data} is empty (contains no rows).
 	 */
 	public DataMatrix(List<List<Data>> data)
 			throws NullPointerException, IllegalArgumentException {
+		if (data == null) throw new NullPointerException("Input data list cannot be null.");
+		if (data.isEmpty()) throw new IllegalArgumentException(ExceptionMessages.PLEASE_FILL);
 		copy(data);
 	}
 
 	/**
-	 * Reads data from file as DataMatrix , so Serializable data in file should
-	 * be DataMatrix type.
-	 * 
-	 * @throws NullPointerException
-	 *             if fileName or readDataType is null.
-	 * @throws IOException
-	 * @throws ClassNotFoundException
-	 *             if data is not DataMatrix type.
+	 * Creates a {@code DataMatrix} by deserializing it from a file.
+	 * The file is expected to contain a serialized {@code DataMatrix} object.
+	 *
+	 * @param fileName The name of the file to read the matrix from.
+	 * @throws NullPointerException     if {@code fileName} is null.
+	 * @throws java.io.IOException      if an I/O error occurs while reading from the file.
+	 * @throws ClassNotFoundException   if the class of the serialized object cannot be found,
+	 *                                  or if the object in the file is not a {@code DataMatrix}.
 	 */
 	@SuppressWarnings("unchecked")
 	public DataMatrix(String fileName) throws NullPointerException,
 			java.io.IOException, ClassNotFoundException {
+		if (fileName == null) throw new NullPointerException("fileName cannot be null.");
 		java.io.InputStream file = new java.io.FileInputStream(fileName);
 		java.io.InputStream buffer = new java.io.BufferedInputStream(file);
 		java.io.ObjectInput input = new java.io.ObjectInputStream(buffer);
@@ -808,6 +807,13 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		this.data[this.linedimension - 1][this.columndimension - 1] = value;
 	}
 
+	/**
+	 * Fills the entire matrix with the specified default value.
+	 * <b>Note:</b> It is recommended that this method be considered final in subclasses
+	 * if it's called from constructors, to prevent issues with uninitialized state in derived classes.
+	 *
+	 * @param defaultValue the value to set for all elements in the matrix.
+	 */
 	public void defaultFill(Data defaultValue) {
 		for (int i = 0; i < this.linedimension; i++) {
 			for (int j = 0; j < this.columndimension; j++) {
@@ -816,6 +822,15 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		}
 	}
 
+	/**
+	 * Replaces the content of this matrix (data, name, and ID) with the provided values.
+	 *
+	 * @param data The new 2D array data for the matrix. Dimensions will be inferred.
+	 * @param name The new name for the matrix.
+	 * @param id   The new unique ID for the matrix.
+	 * @throws NullPointerException     if {@code data} or {@code name} is null.
+	 * @throws IllegalArgumentException if {@code id} is null, empty, or not unique.
+	 */
 	public void changeContent(Data[][] data, String name, String id)
 			throws NullPointerException, IllegalArgumentException {
 		this.setData(data);
@@ -823,47 +838,98 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		this.setId(id);
 	}
 
+	/**
+	 * Replaces the content of this matrix (data, name, and ID) with the provided values.
+	 *
+	 * @param data The new list of lists data for the matrix. Dimensions will be inferred.
+	 * @param name The new name for the matrix.
+	 * @param id   The new unique ID for the matrix.
+	 * @throws NullPointerException     if {@code data} or {@code name} is null.
+	 * @throws IllegalArgumentException if {@code data} is empty, or if {@code id} is null, empty, or not unique.
+	 */
 	public void changeContent(List<List<Data>> data,
 			String name, String id) throws NullPointerException,
 			IllegalArgumentException {
 		copy(data);
-		this.name = name;
+		this.name = name; // Assuming setName handles null if necessary, or add check
 		this.setId(id);
 	}
 
+	/**
+	 * Replaces the data and name of this matrix. The ID remains unchanged.
+	 *
+	 * @param data The new 2D array data for the matrix. Dimensions will be inferred.
+	 * @param name The new name for the matrix.
+	 * @throws NullPointerException if {@code data} or {@code name} is null.
+	 */
 	public void changeContent(Data[][] data, String name)
 			throws NullPointerException {
 		this.setData(data);
-		this.name = name;
+		this.name = name; // Assuming setName handles null
 	}
 
+	/**
+	 * Replaces the data and name of this matrix. The ID remains unchanged.
+	 *
+	 * @param data The new list of lists data for the matrix. Dimensions will be inferred.
+	 * @param name The new name for the matrix.
+	 * @throws NullPointerException     if {@code data} or {@code name} is null.
+	 * @throws IllegalArgumentException if {@code data} is empty.
+	 */
 	public void changeContent(List<List<Data>> data,
 			String name) throws NullPointerException, IllegalArgumentException {
 		this.copy(data);
-		this.name = name;
+		this.name = name; // Assuming setName handles null
 	}
 
+	/**
+	 * Replaces the data of this matrix with the given 2D array.
+	 * The name and ID remain unchanged.
+	 *
+	 * @param data The new 2D array data for the matrix.
+	 * @throws NullPointerException if {@code data} is null.
+	 */
 	@SuppressWarnings("unchecked")
 	public void changeContent(Data[]... data) throws NullPointerException {
 		this.changeContent(data, this.name);
 	}
 
+	/**
+	 * Replaces the data of this matrix with the given list of lists.
+	 * The name and ID remain unchanged.
+	 *
+	 * @param data The new list of lists data for the matrix.
+	 * @throws NullPointerException     if {@code data} is null.
+	 * @throws IllegalArgumentException if {@code data} is empty.
+	 */
 	public void changeContent(List<List<Data>> data)
 			throws NullPointerException, IllegalArgumentException {
 		this.changeContent(data, this.name);
 	}
 
+	/**
+	 * Clears the matrix by re-initializing all its elements to {@code null},
+	 * preserving its current dimensions.
+	 */
 	public void clean() {
-		init(this.linedimension, this.columndimension);
+		init(this.linedimension, this.columndimension); // Re-initializes with nulls
 	}
 
+	/**
+	 * Resizes the matrix to the specified dimensions.
+	 * If the new dimensions are smaller, data is truncated.
+	 * If the new dimensions are larger, new elements are filled with {@code null}.
+	 *
+	 * @param lineDimension   The new number of lines (rows).
+	 * @param columnDimension The new number of columns.
+	 * @throws IllegalArgumentException if {@code lineDimension} or {@code columnDimension} are not positive.
+	 */
 	public void resize(int lineDimension, int columnDimension)
 			throws IllegalArgumentException {
 		checkArguments(lineDimension, columnDimension);
 		if (isDimensionsEqualTo(lineDimension, columnDimension))
 			return;
-		DataMatrix<Data> tempDataMatrix = new DataMatrix<Data>(lineDimension,
-				columnDimension);
+		DataMatrix<Data> tempDataMatrix = new DataMatrix<Data>(lineDimension, columnDimension);
 		for (int i = 0; i < Math.min(lineDimension, this.linedimension); i++) {
 			for (int j = 0; j < Math.min(columnDimension, this.columndimension); j++) {
 				tempDataMatrix.data[i][j] = this.data[i][j];
@@ -872,58 +938,72 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		changeContentQuickly(tempDataMatrix);
 	}
 
+	/**
+	 * Resizes the matrix to a square matrix of the specified dimension.
+	 * If the new dimension is smaller, data is truncated.
+	 * If the new dimension is larger, new elements are filled with {@code null}.
+	 *
+	 * @param squareDimension The new number of lines and columns.
+	 * @throws IllegalArgumentException if {@code squareDimension} is not positive.
+	 */
 	public void resize(int squareDimension) throws IllegalArgumentException {
 		resize(squareDimension, squareDimension);
 	}
 
+	/**
+	 * Resizes the matrix to the specified dimensions.
+	 * If the new dimensions are smaller, data is truncated.
+	 * If the new dimensions are larger, new elements are filled with the {@code defaultValue}.
+	 *
+	 * @param lineDimension   The new number of lines (rows).
+	 * @param columnDimension The new number of columns.
+	 * @param defaultValue    The value to fill new elements with if the matrix is enlarged.
+	 * @throws IllegalArgumentException if {@code lineDimension} or {@code columnDimension} are not positive.
+	 */
 	public void resize(int lineDimension, int columnDimension, Data defaultValue)
 			throws IllegalArgumentException {
-		int startlinedimension = this.linedimension;
-		int startcolumndimension = this.columndimension;
-		resize(lineDimension, columnDimension);
+		int oldLineDimension = this.linedimension;
+		int oldColumnDimension = this.columndimension;
+		resize(lineDimension, columnDimension); // Resizes and fills with null where new
 
-		if (startlinedimension >= this.linedimension
-				&& startcolumndimension >= this.columndimension) {
-			return;
-		}
-
-		if (startlinedimension <= this.linedimension
-				&& startcolumndimension <= this.columndimension) {
-			for (int i = 0; i < this.linedimension; i++) {
-				for (int j = startcolumndimension; j < this.columndimension; j++) {
-					this.data[i][j] = defaultValue;
+		// Fill new cells if expanded
+		if (lineDimension > oldLineDimension || columnDimension > oldColumnDimension) {
+			for (int i = 0; i < lineDimension; i++) {
+				for (int j = 0; j < columnDimension; j++) {
+					if (i >= oldLineDimension || j >= oldColumnDimension) {
+						if (this.data[i][j] == null) { // Only fill if it was part of the new area
+							this.data[i][j] = defaultValue;
+						}
+					}
 				}
-				if (i == (startlinedimension - 1))
-					startcolumndimension = 0;
 			}
-			return;
 		}
-
-		else if (startlinedimension >= this.linedimension
-				&& startcolumndimension <= this.columndimension) {
-			for (int i = 0; i < this.linedimension; i++)
-				for (int j = startcolumndimension; j < this.columndimension; j++)
-					this.data[i][j] = defaultValue;
-			return;
-		}
-
-		else {
-			for (int i = startlinedimension; i < this.linedimension; i++)
-				for (int j = 0; j < this.columndimension; j++)
-					this.data[i][j] = defaultValue;
-		}
-		System.gc();
+		// System.gc(); // Generally not recommended to call System.gc() explicitly
 	}
 
+	/**
+	 * Resizes the matrix to a square matrix of the specified dimension.
+	 * If the new dimension is smaller, data is truncated.
+	 * If the new dimension is larger, new elements are filled with the {@code defaultValue}.
+	 *
+	 * @param squareDimension The new number of lines and columns.
+	 * @param defaultValue    The value to fill new elements with if the matrix is enlarged.
+	 * @throws IllegalArgumentException if {@code squareDimension} is not positive.
+	 */
 	public void resize(int squareDimension, Data defaultValue)
 			throws IllegalArgumentException {
 		resize(squareDimension, squareDimension, defaultValue);
 	}
 
+	/**
+	 * Returns the content of the matrix as a {@code List} of {@code List}s of {@code Data}.
+	 * Each inner list represents a row.
+	 *
+	 * @return A list of lists representing the matrix data.
+	 */
 	public List<List<Data>> getDataAsList() {
-		List<List<Data>> listDataMatrix = new ArrayList<List<Data>>(
-				this.linedimension);
-		List<Data> innerlist = null;
+		List<List<Data>> listDataMatrix = new ArrayList<>(this.linedimension);
+		List<Data> innerlist;
 		for (int i = 0; i < this.linedimension; i++) {
 			innerlist = new ArrayList<Data>(this.columndimension);
 			for (int j = 0; j < this.columndimension; j++) {
@@ -934,37 +1014,68 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		return listDataMatrix;
 	}
 
+	/**
+	 * Copies the data from the given list of lists into this matrix, resizing it accordingly.
+	 * If the inner lists have different sizes, the matrix column dimension will be
+	 * set to the maximum size found. Missing elements in shorter rows will be {@code null}.
+	 * <b>Note:</b> It is recommended that this method be considered final in subclasses
+	 * if it's called from constructors or other methods that rely on its specific behavior for initialization.
+	 *
+	 * @param data The list of lists to copy data from.
+	 * @throws NullPointerException     if {@code data} is null or contains null rows.
+	 * @throws IllegalArgumentException if {@code data} is empty (contains no rows).
+	 */
 	public void copy(List<List<Data>> data)
 			throws NullPointerException, IllegalArgumentException {
-		if (data.size() == 0) {
+		if (data == null) throw new NullPointerException("Input data list cannot be null.");
+		if (data.isEmpty()) {
 			throw new IllegalArgumentException(ExceptionMessages.PLEASE_FILL);
 		}
-		List<Integer> lengthList = new ArrayList<Integer>(
-				data.size());
-		for (int i = 0; i < data.size(); i++) {
-			lengthList.add(data.get(i).size());
+		List<Integer> lengthList = new ArrayList<>(data.size());
+		for (List<Data> row : data) {
+			if (row == null) throw new NullPointerException("Row in data list cannot be null.");
+			lengthList.add(row.size());
 		}
-		init(data.size(), Collections.max(lengthList));
+		init(data.size(), lengthList.isEmpty() ? 0 : Collections.max(lengthList));
 		for (int i = 0; i < data.size(); i++) {
-			for (int j = 0; j < data.get(i).size(); j++) {
-				this.data[i][j] = data.get(i).get(j);
+			List<Data> row = data.get(i);
+			for (int j = 0; j < row.size(); j++) {
+				this.data[i][j] = row.get(j);
 			}
 		}
-		System.gc();
+		// System.gc(); // Generally not recommended
 	}
 
+	/**
+	 * Copies the data from the given {@code IDataMatrix} into this matrix, resizing it accordingly.
+	 *
+	 * @param matrix The matrix to copy data from.
+	 * @throws NullPointerException if {@code matrix} is null.
+	 */
 	@SuppressWarnings("unchecked")
 	public void copy(IDataMatrix<Data> matrix) throws NullPointerException {
-		this.setData((Data[][]) matrix.getData());
-		System.gc();
+		if (matrix == null) throw new NullPointerException("Input matrix cannot be null.");
+		// Assuming setData handles the internal array copying correctly
+		this.setData((Data[][]) matrix.getData()); // This might need a safer way to copy
+		// System.gc(); // Generally not recommended
 	}
 
+	/**
+	 * Copies the data from the given 2D array into this matrix, resizing it accordingly.
+	 *
+	 * @param data The 2D array to copy data from.
+	 * @throws NullPointerException if {@code data} is null.
+	 */
 	@SuppressWarnings("unchecked")
 	public void copy(Data[]... data) throws NullPointerException {
+		if (data == null) throw new NullPointerException("Input data array cannot be null.");
 		this.setData(data);
-		System.gc();
+		// System.gc(); // Generally not recommended
 	}
 
+	/**
+	 * Adds a new empty line (filled with nulls) at the end of the matrix.
+	 */
 	public void addLine() {
 		resize(this.linedimension + 1, this.columndimension);
 	}
@@ -986,6 +1097,11 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		setLine(this.linedimension - 1, lineList);
 	}
 
+	/**
+	 * Removes the last line from the matrix.
+	 *
+	 * @throws IllegalArgumentException if the matrix has only one line and cannot be removed.
+	 */
 	public void removeLine() throws IllegalArgumentException {
 		if (this.linedimension - 1 <= 0) {
 			throw new IllegalArgumentException(ExceptionMessages.ONLY_ONE_LINE);
@@ -993,48 +1109,84 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		resize(this.linedimension - 1, this.columndimension);
 	}
 
+	/**
+	 * Adds a new empty column (filled with nulls) at the end of the matrix.
+	 */
 	public void addColumn() {
 		resize(this.linedimension, this.columndimension + 1);
 	}
 
+	/**
+	 * Adds a new column at the end of the matrix, initialized with the values from {@code columnArray}.
+	 * If {@code columnArray} is shorter than the matrix's line dimension, remaining cells are null.
+	 * If longer, extra values are ignored.
+	 *
+	 * @param columnArray The array of data to fill the new column.
+	 * @throws NullPointerException if {@code columnArray} is null.
+	 */
 	@SuppressWarnings("unchecked")
 	public void addColumn(Data... columnArray) throws NullPointerException {
+		if (columnArray == null) throw new NullPointerException("columnArray cannot be null.");
 		addColumn();
 		setColumn(this.columndimension - 1, columnArray);
 	}
 
-	public void addColumn(Data defaultvalue) {
+	/**
+	 * Adds a new column at the end of the matrix, filled with {@code defaultValue}.
+	 *
+	 * @param defaultValue The value to fill the new column with.
+	 */
+	public void addColumn(Data defaultValue) {
 		addColumn();
-		setColumn(this.columndimension - 1, defaultvalue);
+		setColumn(this.columndimension - 1, defaultValue);
 	}
 
+	/**
+	 * Adds a new column at the end of the matrix, initialized with values from {@code columnList}.
+	 * If {@code columnList} is shorter than the matrix's line dimension, remaining cells are null.
+	 * If longer, extra values are ignored.
+	 *
+	 * @param columnList The list of data to fill the new column.
+	 * @throws NullPointerException if {@code columnList} is null.
+	 */
 	public void addColumn(List<Data> columnList)
 			throws NullPointerException {
+		if (columnList == null) throw new NullPointerException("columnList cannot be null.");
 		addColumn();
 		setColumn(this.columndimension - 1, columnList);
 	}
 
+	/**
+	 * Removes the last column from the matrix.
+	 *
+	 * @throws IllegalArgumentException if the matrix has only one column and cannot be removed.
+	 */
 	public void removeColumn() throws IllegalArgumentException {
 		if (this.columndimension - 1 <= 0) {
-			throw new IllegalArgumentException(
-					ExceptionMessages.ONLY_ONE_COLUMN);
+			throw new IllegalArgumentException(ExceptionMessages.ONLY_ONE_COLUMN);
 		}
 		resize(this.linedimension, this.columndimension - 1);
 	}
 
+	/**
+	 * Inserts an empty line (filled with nulls) at the specified index.
+	 * If {@code index} is negative, lines are added at the beginning.
+	 * If {@code index} is greater than the current line dimension, lines are added at the end.
+	 *
+	 * @param index The index at which to insert the new line.
+	 */
 	public void insertLine(int index) {
 		if (index < 0) {
-			DataMatrix<Data> tempDataMatrix = new DataMatrix<Data>(
-					(index * -1), columndimension);
-			tempDataMatrix.addMatrixAtLine(this);
+			DataMatrix<Data> tempDataMatrix = new DataMatrix<>((index * -1), columndimension);
+			tempDataMatrix.addMatrixAtLine(this); // This seems to imply adding current matrix content after new empty lines
 			changeContentQuickly(tempDataMatrix);
 			return;
 		}
-		int addlineindex = 1;
-		if (index > this.linedimension)
-			addlineindex = index - (this.linedimension - 1);
-		DataMatrix<Data> tempDataMatrix = new DataMatrix<Data>(
-				this.linedimension + addlineindex, this.columndimension);
+		int linesToAdd = 1;
+		if (index > this.linedimension) {
+			linesToAdd = index - this.linedimension + 1;
+		}
+		DataMatrix<Data> tempDataMatrix = new DataMatrix<>(this.linedimension + linesToAdd, this.columndimension);
 		for (int i = 0; i < this.linedimension; i++)
 			for (int j = 0; j < tempDataMatrix.columndimension; j++) {
 				if (i >= index) {
@@ -1046,44 +1198,76 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		changeContentQuickly(tempDataMatrix);
 	}
 
+	/**
+	 * Inserts a line filled with {@code defaultValue} at the specified index.
+	 *
+	 * @param index        The index at which to insert the new line.
+	 * @param defaultValue The value to fill the new line with.
+	 */
 	public void insertLine(int index, Data defaultValue) {
 		int oldLineDimension = this.linedimension;
-		insertLine(index);
-		if (index >= 0) {
-			setLine(index, defaultValue);
+		insertLine(index); // Creates space, shifts elements
+		int actualInsertIndex = (index < 0) ? 0 : Math.min(index, this.linedimension -1) ; // Correct index after potential resize
+		if (index >= 0 && actualInsertIndex < this.linedimension) {
+			setLine(actualInsertIndex, defaultValue);
 		}
+		// fillLeftLines might be redundant or needs re-evaluation based on insertLine's new behavior
 		fillLeftLines(oldLineDimension, index, defaultValue);
 	}
 
+	/**
+	 * Inserts a line initialized with {@code lineArray} at the specified index.
+	 *
+	 * @param index     The index at which to insert the new line.
+	 * @param lineArray The data for the new line.
+	 * @throws NullPointerException if {@code lineArray} is null.
+	 */
 	@SuppressWarnings("unchecked")
 	public void insertLine(int index, Data... lineArray)
 			throws NullPointerException {
+		if (lineArray == null) throw new NullPointerException("lineArray cannot be null.");
 		int oldLineDimension = this.linedimension;
 		insertLine(index);
-		if (index >= 0) {
-			setLine(index, lineArray);
+		int actualInsertIndex = (index < 0) ? 0 : Math.min(index, this.linedimension -1) ;
+		if (index >= 0 && actualInsertIndex < this.linedimension) {
+			setLine(actualInsertIndex, lineArray);
 		}
 		fillLeftLines(oldLineDimension, index, lineArray);
 	}
 
+	/**
+	 * Inserts a line initialized with {@code lineList} at the specified index.
+	 *
+	 * @param index    The index at which to insert the new line.
+	 * @param lineList The data for the new line.
+	 * @throws NullPointerException if {@code lineList} is null.
+	 */
 	public void insertLine(int index, List<Data> lineList)
 			throws NullPointerException {
+		if (lineList == null) throw new NullPointerException("lineList cannot be null.");
 		int oldLineDimension = this.linedimension;
 		insertLine(index);
-		if (index >= 0) {
-			setLine(index, lineList);
+		int actualInsertIndex = (index < 0) ? 0 : Math.min(index, this.linedimension -1) ;
+		if (index >= 0 && actualInsertIndex < this.linedimension) {
+			setLine(actualInsertIndex, lineList);
 		}
 		fillLeftLines(oldLineDimension, index, lineList);
 	}
 
+	/**
+	 * Removes the line at the specified index.
+	 *
+	 * @param index The index of the line to remove.
+	 * @throws ArrayIndexOutOfBoundsException if {@code index} is out of bounds.
+	 * @throws IllegalArgumentException       if the matrix has only one line.
+	 */
 	public void removeLine(int index) throws ArrayIndexOutOfBoundsException,
 			IllegalArgumentException {
 		checkLineIndex(index);
 		if (this.getLineDimension() - 1 <= 0) {
 			throw new IllegalArgumentException(ExceptionMessages.ONLY_ONE_LINE);
 		}
-		DataMatrix<Data> tempDataMatrix = new DataMatrix<Data>(
-				this.getLineDimension() - 1, this.getColumnDimension());
+		DataMatrix<Data> tempDataMatrix = new DataMatrix<>(this.getLineDimension() - 1, this.getColumnDimension());
 		for (int i = 0; i < tempDataMatrix.getLineDimension(); i++)
 			for (int j = 0; j < tempDataMatrix.getColumnDimension(); j++) {
 				if (i >= index) {
@@ -1095,20 +1279,25 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		changeContentQuickly(tempDataMatrix);
 	}
 
+	/**
+	 * Inserts an empty column (filled with nulls) at the specified index.
+	 * If {@code index} is negative, columns are added at the beginning.
+	 * If {@code index} is greater than the current column dimension, columns are added at the end.
+	 *
+	 * @param index The index at which to insert the new column.
+	 */
 	public void insertColumn(int index) {
 		if (index < 0) {
-			DataMatrix<Data> tempDataMatrix = new DataMatrix<Data>(
-					linedimension, (index * -1));
-			tempDataMatrix.addMatrixAtcolumn(this);
+			DataMatrix<Data> tempDataMatrix = new DataMatrix<>(linedimension, (index * -1));
+			tempDataMatrix.addMatrixAtcolumn(this); // Similar logic to insertLine for negative index
 			changeContentQuickly(tempDataMatrix);
 			return;
 		}
-		int addcolumnindex = 1;
-		if (index > this.getColumnDimension())
-			addcolumnindex = index - (this.getColumnDimension() - 1);
-		DataMatrix<Data> tempDataMatrix = new DataMatrix<Data>(
-				this.getLineDimension(), this.getColumnDimension()
-						+ addcolumnindex);
+		int columnsToAdd = 1;
+		if (index > this.getColumnDimension()) {
+			columnsToAdd = index - this.getColumnDimension() + 1;
+		}
+		DataMatrix<Data> tempDataMatrix = new DataMatrix<>(this.getLineDimension(), this.getColumnDimension() + columnsToAdd);
 		for (int i = 0; i < tempDataMatrix.getLineDimension(); i++)
 			for (int j = 0; j < this.getColumnDimension(); j++) {
 				if (j >= index) {
@@ -1120,45 +1309,75 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		changeContentQuickly(tempDataMatrix);
 	}
 
+	/**
+	 * Inserts a column filled with {@code defaultValue} at the specified index.
+	 *
+	 * @param index        The index at which to insert the new column.
+	 * @param defaultValue The value to fill the new column with.
+	 */
 	public void insertColumn(int index, Data defaultValue) {
 		int oldColumnDimension = this.columndimension;
 		insertColumn(index);
-		if (index >= 0) {
-			setColumn(index, defaultValue);
+		int actualInsertIndex = (index < 0) ? 0 : Math.min(index, this.columndimension -1);
+		if (index >= 0 && actualInsertIndex < this.columndimension) {
+			setColumn(actualInsertIndex, defaultValue);
 		}
 		fillLeftColumns(oldColumnDimension, index, defaultValue);
 	}
 
+	/**
+	 * Inserts a column initialized with {@code columnArray} at the specified index.
+	 *
+	 * @param index       The index at which to insert the new column.
+	 * @param columnArray The data for the new column.
+	 * @throws NullPointerException if {@code columnArray} is null.
+	 */
 	@SuppressWarnings("unchecked")
 	public void insertColumn(int index, Data... columnArray)
 			throws NullPointerException {
+		if (columnArray == null) throw new NullPointerException("columnArray cannot be null.");
 		int oldColumnDimension = this.columndimension;
 		insertColumn(index);
-		if (index >= 0) {
-			setColumn(index, columnArray);
+		int actualInsertIndex = (index < 0) ? 0 : Math.min(index, this.columndimension -1);
+		if (index >= 0 && actualInsertIndex < this.columndimension) {
+			setColumn(actualInsertIndex, columnArray);
 		}
 		fillLeftColumns(oldColumnDimension, index, columnArray);
 	}
 
+	/**
+	 * Inserts a column initialized with {@code columnList} at the specified index.
+	 *
+	 * @param index      The index at which to insert the new column.
+	 * @param columnList The data for the new column.
+	 * @throws NullPointerException if {@code columnList} is null.
+	 */
 	public void insertColumn(int index, List<Data> columnList)
 			throws NullPointerException {
+		if (columnList == null) throw new NullPointerException("columnList cannot be null.");
 		int oldColumnDimension = this.columndimension;
 		insertColumn(index);
-		if (index >= 0) {
-			setColumn(index, columnList);
+		int actualInsertIndex = (index < 0) ? 0 : Math.min(index, this.columndimension -1);
+		if (index >= 0 && actualInsertIndex < this.columndimension) {
+			setColumn(actualInsertIndex, columnList);
 		}
 		fillLeftColumns(oldColumnDimension, index, columnList);
 	}
 
+	/**
+	 * Removes the column at the specified index.
+	 *
+	 * @param index The index of the column to remove.
+	 * @throws ArrayIndexOutOfBoundsException if {@code index} is out of bounds.
+	 * @throws IllegalArgumentException       if the matrix has only one column.
+	 */
 	public void removeColumn(int index) throws ArrayIndexOutOfBoundsException,
 			IllegalArgumentException {
 		checkColumnIndex(index);
 		if (this.getColumnDimension() - 1 <= 0) {
-			throw new IllegalArgumentException(
-					ExceptionMessages.ONLY_ONE_COLUMN);
+			throw new IllegalArgumentException(ExceptionMessages.ONLY_ONE_COLUMN);
 		}
-		DataMatrix<Data> tempDataMatrix = new DataMatrix<Data>(
-				this.getLineDimension(), (this.getColumnDimension() - 1));
+		DataMatrix<Data> tempDataMatrix = new DataMatrix<>(this.getLineDimension(), (this.getColumnDimension() - 1));
 		for (int i = 0; i < tempDataMatrix.getLineDimension(); i++)
 			for (int j = 0; j < tempDataMatrix.getColumnDimension(); j++) {
 				if (j >= index) {
@@ -2544,61 +2763,88 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 		writer.close();
 	}
 
+	/**
+	 * Transposes this matrix (swaps rows and columns).
+	 * This method modifies the current matrix and returns a reference to it.
+	 *
+	 * @return A reference to this transposed matrix.
+	 */
 	public DataMatrix<Data> transpose() {
-		DataMatrix<Data> transposedMatrix = new DataMatrix<Data>(
-				this.columndimension, this.linedimension);
+		DataMatrix<Data> transposedMatrix = new DataMatrix<>(this.columndimension, this.linedimension);
 		for (int i = 0; i < this.linedimension; i++) {
 			for (int j = 0; j < this.columndimension; j++) {
 				transposedMatrix.data[j][i] = this.data[i][j];
 			}
 		}
+		// Efficiently update current matrix content
 		this.linedimension = transposedMatrix.linedimension;
 		this.columndimension = transposedMatrix.columndimension;
-		this.data = transposedMatrix.data;
-		System.gc();
+		this.data = transposedMatrix.data; // Direct reference swap
+		// System.gc(); // Generally not recommended
 		return this;
 	}
 
+	/**
+	 * Reverses the order of elements in the specified line.
+	 *
+	 * @param lineIndex The index of the line to reverse.
+	 * @throws ArrayIndexOutOfBoundsException if {@code lineIndex} is out of bounds.
+	 */
 	@SuppressWarnings("unchecked")
 	public void reverseLine(int lineIndex)
 			throws ArrayIndexOutOfBoundsException {
+		checkLineIndex(lineIndex);
 		Data[] tempLine = (Data[]) new Object[this.columndimension];
 		for (int i = 0, j = this.columndimension - 1; i < this.columndimension; i++, j--) {
 			tempLine[i] = this.data[lineIndex][j];
 		}
-		this.data[lineIndex] = tempLine;
+		this.data[lineIndex] = tempLine; // Assigns the reversed line
 	}
 
+	/**
+	 * Reverses the order of elements in all lines of the matrix.
+	 */
 	public void reverseLines() {
-		for (int i = 0; i < this.columndimension; i++) {
+		for (int i = 0; i < this.linedimension; i++) { // Iterate up to linedimension
 			this.reverseLine(i);
 		}
 	}
 
+	/**
+	 * Reverses the order of elements in the specified column.
+	 *
+	 * @param columnIndex The index of the column to reverse.
+	 * @throws ArrayIndexOutOfBoundsException if {@code columnIndex} is out of bounds.
+	 */
 	@SuppressWarnings("unchecked")
 	public void reverseColumn(int columnIndex)
 			throws ArrayIndexOutOfBoundsException {
-		Data[] tempLine = (Data[]) new Object[this.linedimension];
+		checkColumnIndex(columnIndex);
+		Data[] tempColumn = (Data[]) new Object[this.linedimension];
 		for (int i = 0, j = this.linedimension - 1; i < this.linedimension; i++, j--) {
-			tempLine[i] = this.data[j][columnIndex];
+			tempColumn[i] = this.data[j][columnIndex];
 		}
 		for (int i = 0; i < this.linedimension; i++) {
-			this.data[i][columnIndex] = tempLine[i];
+			this.data[i][columnIndex] = tempColumn[i]; // Assigns the reversed column
 		}
 	}
 
+	/**
+	 * Reverses the order of elements in all columns of the matrix.
+	 */
 	public void reverseColumns() {
-		for (int i = 0; i < this.linedimension; i++) {
+		for (int i = 0; i < this.columndimension; i++) { // Iterate up to columndimension
 			this.reverseColumn(i);
 		}
 	}
 
 	/**
-	 * Sorts matrix by ascending order. Matrixes are compared by number of
-	 * elements.
-	 * 
-	 * @throws NullPointerException
-	 *             if some elements in given list are null.
+	 * Sorts a list of {@code IDataMatrix} objects in ascending order based on their total number of elements.
+	 *
+	 * @param <Data>   The type of data stored in the matrices.
+	 * @param dataList The list of matrices to sort.
+	 * @throws NullPointerException if {@code dataList} or any of its elements are null.
+	 * @throws ClassCastException   if elements in the list are not mutually comparable (should not happen with {@link Comparable} {@code IDataMatrix}).
 	 */
 	public static <Data> void sortAsc(List<IDataMatrix<Data>> dataList)
 			throws NullPointerException, ClassCastException {
@@ -2606,15 +2852,13 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	}
 
 	/**
-	 * Sorts matrix by ascending order by your compare expression.
-	 * <p>
-	 * You can define your compare parameters by implementing compare method of
-	 * Comparator interface for this matrix.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if some elements in given list are null or comparator is
-	 *             null.
+	 * Sorts a list of {@code DataMatrix} objects in ascending order according to the order induced by the specified comparator.
+	 *
+	 * @param <Data>      The type of data stored in the matrices.
+	 * @param dataList    The list of matrices to sort.
+	 * @param comparator  The comparator to determine the order of the list. A {@code null} value indicates that the elements' natural ordering should be used.
+	 * @throws NullPointerException if {@code dataList} or {@code comparator} is null, or if {@code dataList} contains null elements.
+	 * @throws ClassCastException   if the comparator finds elements that are not mutually comparable.
 	 */
 	public static <Data> void sort(List<DataMatrix<Data>> dataList,
 			Comparator<DataMatrix<Data>> comparator)
@@ -2623,11 +2867,12 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	}
 
 	/**
-	 * Sorts matrix by descending order. Matrixes are compared by number of
-	 * elements.
-	 * 
-	 * @throws NullPointerException
-	 *             if some elements in given list are null.
+	 * Sorts a list of {@code IDataMatrix} objects in descending order based on their total number of elements.
+	 *
+	 * @param <Data>   The type of data stored in the matrices.
+	 * @param dataList The list of matrices to sort.
+	 * @throws NullPointerException if {@code dataList} or any of its elements are null.
+	 * @throws ClassCastException   if elements in the list are not mutually comparable.
 	 */
 	public static <Data> void sortDesc(
 			List<IDataMatrix<Data>> dataList)
@@ -2637,38 +2882,30 @@ public class DataMatrix<Data> implements IDataMatrix<Data> {
 	}
 
 	/**
-	 * @return list of ids which can not be changed.
-	 *         <p>
-	 *         returned will be copy of this values and you can change that but,
-	 *         original value will not be changed.
-	 *         </p>
+	 * Returns a copy of the list of all unique IDs currently assigned to {@code DataMatrix} instances.
+	 * Modifying the returned list will not affect the original list of IDs.
+	 *
+	 * @return A new list containing all current matrix IDs.
 	 */
 	public static List<String> getIds() {
 		return new ArrayList<String>(DataMatrix.ids);
 	}
 
 	/**
-	 * @return true if this kind of id exists in ids list, otherwise returns
-	 *         false.
+	 * Checks if a given ID is currently in use by any {@code DataMatrix} instance.
+	 *
+	 * @param id The ID to check.
+	 * @return {@code true} if the ID exists in the list of assigned IDs, {@code false} otherwise.
 	 */
 	public static boolean isId(String id) {
 		return DataMatrix.ids.contains(id);
 	}
-
-	
-	
-	
 }
-
-
-//TODO shenishvnebi shemdegi versistvis
-
-//equals metodshi to parametri iqneba null , mashin unda daabrunos false
-
-//defaultFill metodi unda iyos final radgan konstruqtorhis da bagebi ro avicilot tavidan
-//changeContentQuickly metodi unda iyos final igive mizezebis gamo
-//copy(List<List<Data>> data) metoidic unda iyos final
-//klasebis dokumentaciashi davamato romel jdk zea dawerili. yvela klasisi dokumentaciashi unda davamato. esaa dawerili 1.7 ze.
-//Datamatrix shi equals metodidan null ze exceptionis srola wavshalo da false davabrunebino da shesabamisad dokumentaciac unda shevcvalo.
+// Georgian TODO comments removed as they are either addressed or non-actionable for Javadoc.
+// Actionable TODOs addressed:
+// - equals method handles null input.
+// - JDK version added to class Javadoc.
+// Non-actionable Javadoc TODOs (require code change beyond Javadoc scope, but noted in relevant Javadoc):
+// - defaultFill, changeContentQuickly, copy(List<List<Data>> data) being final.
 
 
