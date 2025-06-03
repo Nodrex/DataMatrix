@@ -5,2019 +5,1616 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
+ * Defines the contract for a data matrix, a 2D data structure.
+ * This interface provides methods for manipulating the matrix, such as adding/removing rows and columns,
+ * accessing and modifying elements, performing mathematical operations, and managing matrix properties.
  * <p>
- * This interface contains useful methods which are implemented in DataMatrix
- * class.
+ * Implementations are expected to handle generic data types {@code <Data>}.
  * </p>
  * <p>
- * Implements Serializable , Comparable , Cloneable interfaces.
+ * This interface extends {@link Cloneable}, {@link Comparable} (for comparing with other {@code IDataMatrix} instances
+ * based on the number of elements), and {@link Serializable} to support cloning, comparison, and serialization.
  * </p>
- * <p>
- * Can be implemented by any class or extended by any class.
- * </p>
- * 
- * @param <Data>Any type can be stored.
+ *
+ * @param <Data> The type of data stored in the matrix.
  * @author NODREX
  * @version 1.0
  * @since 2013
- * 
+ * @see DataMatrix
+ * @see java.lang.Cloneable
+ * @see java.lang.Comparable
+ * @see java.io.Serializable
  */
 public interface IDataMatrix<Data> extends Cloneable,
 		Comparable<IDataMatrix<Data>>, Serializable {
 
 	/**
-	 * Adds new column in to the end of this matrix.
+	 * Adds a new, empty column (filled with nulls) to the end of this matrix.
+	 * This increases the column dimension by one.
 	 */
 	void addColumn();
 
 	/**
-	 * Adds new column in to the end of this matrix and copy values from given
-	 * columnArray to newly created column.
+	 * Adds a new column to the end of this matrix and populates it with values from the given {@code columnArray}.
 	 * <p>
-	 * If columnArray length is bigger then this matrix column dimension than
-	 * copied will be only column dimension number of data, other data will be
-	 * ignored.
+	 * If the length of {@code columnArray} is greater than the matrix's current line dimension,
+	 * only a number of elements equal to the line dimension will be copied; excess elements are ignored.
 	 * </p>
 	 * <p>
-	 * If columnArray length is less then this matrix column dimension than
-	 * copied will be all columnArray and other places of this column will be
-	 * null.
+	 * If the length of {@code columnArray} is less than the matrix's current line dimension,
+	 * all elements from {@code columnArray} will be copied, and the remaining cells in the new column will be null.
 	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if given lineArray is null.
+	 *
+	 * @param columnArray The array of data to populate the new column.
+	 * @throws NullPointerException if {@code columnArray} is null.
 	 */
 	@SuppressWarnings(value = "unchecked")
 	void addColumn(Data... columnArray);
 
 	/**
-	 * Adds new column in to the end of this matrix and fills with default
-	 * value.
+	 * Adds a new column to the end of this matrix and fills all its cells with the specified {@code defaultValue}.
+	 *
+	 * @param defaultValue The value to fill the new column with.
 	 */
-	void addColumn(Data defaultvalue);
+	void addColumn(Data defaultValue);
 
 	/**
-	 * Adds new column in to the end of this matrix and copy values from given
-	 * columnList to newly created column.
+	 * Adds a new column to the end of this matrix and populates it with values from the given {@code columnList}.
 	 * <p>
-	 * If columnList size is bigger then this matrix column dimension than
-	 * copied will be only column dimension number of data, other data will be
-	 * ignored.
+	 * If the size of {@code columnList} is greater than the matrix's current line dimension,
+	 * only a number of elements equal to the line dimension will be copied; excess elements are ignored.
 	 * </p>
 	 * <p>
-	 * If columnList size is less then this matrix column dimension than copied
-	 * will be all columnList and other places of this column will be null.
+	 * If the size of {@code columnList} is less than the matrix's current line dimension,
+	 * all elements from {@code columnList} will be copied, and the remaining cells in the new column will be null.
 	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if given columnList is null.
+	 *
+	 * @param columnList The list of data to populate the new column.
+	 * @throws NullPointerException if {@code columnList} is null.
 	 */
 	void addColumn(List<Data> columnList);
 
 	/**
-	 * Adds new line in to the end of this matrix.
+	 * Adds a new, empty line (row, filled with nulls) to the end of this matrix.
+	 * This increases the line dimension by one.
 	 */
 	void addLine();
 
 	/**
-	 * Adds new line in to the end of this matrix and copy values from given
-	 * lineArray to newly created row.
+	 * Adds a new line to the end of this matrix and populates it with values from the given {@code lineArray}.
 	 * <p>
-	 * If lineArray length is bigger then this matrix line dimension than copied
-	 * will be only line dimension number of data, other data will be ignored.
+	 * If the length of {@code lineArray} is greater than the matrix's current column dimension,
+	 * only a number of elements equal to the column dimension will be copied; excess elements are ignored.
 	 * </p>
 	 * <p>
-	 * If lineArray length is less then this matrix line dimension than copied
-	 * will be all lineArray and other places of this line will be null.
+	 * If the length of {@code lineArray} is less than the matrix's current column dimension,
+	 * all elements from {@code lineArray} will be copied, and the remaining cells in the new line will be null.
 	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if given lineArray is null
+	 *
+	 * @param lineArray The array of data to populate the new line.
+	 * @throws NullPointerException if {@code lineArray} is null.
 	 */
 	@SuppressWarnings(value = "unchecked")
 	void addLine(Data... lineArray);
 
 	/**
-	 * Adds new line in to the end of this matrix and fills with default value.
+	 * Adds a new line to the end of this matrix and fills all its cells with the specified {@code defaultValue}.
+	 *
+	 * @param defaultValue The value to fill the new line with.
 	 */
-	void addLine(Data defaultvalue);
+	void addLine(Data defaultValue);
 
 	/**
-	 * Adds new line in to the end of this matrix and copy values from given
-	 * lineList to newly created row.
+	 * Adds a new line to the end of this matrix and populates it with values from the given {@code lineList}.
 	 * <p>
-	 * If lineList size is bigger then this matrix line dimension than copied
-	 * will be only line dimension number of data, other data will be ignored.
+	 * If the size of {@code lineList} is greater than the matrix's current column dimension,
+	 * only a number of elements equal to the column dimension will be copied; excess elements are ignored.
 	 * </p>
 	 * <p>
-	 * If lineList size is less then this matrix line dimension than copied will
-	 * be all lineList and other places of this line will be null.
+	 * If the size of {@code lineList} is less than the matrix's current column dimension,
+	 * all elements from {@code lineList} will be copied, and the remaining cells in the new line will be null.
 	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if given lineArray is null
+	 *
+	 * @param lineList The list of data to populate the new line.
+	 * @throws NullPointerException if {@code lineList} is null.
 	 */
 	void addLine(List<Data> lineList);
 
 	/**
-	 * Adds new matrix to the end of this matrix. Both matrix values will be
-	 * copied and column dimension of this new matrix will be same , but line
-	 * dimension will be changed : this.linedimension + matrix.linedimension.
+	 * Appends the rows of the specified {@code matrix} to the end of this matrix.
+	 * The column dimension of this matrix may be adjusted (potentially adding nulls or truncating data from the appended matrix)
+	 * to match the column dimension of this matrix if they are different. The line dimension of this matrix
+	 * will be increased by the line dimension of the appended matrix.
 	 * <p>
-	 * For example:
+	 * Example:
 	 * </p>
+	 * <p>This matrix (A):<br>1 2 3</p>
+	 * <p>Specified matrix (B):<br>4 5 6</p>
+	 * <p>After {@code A.addMatrixAtLine(B)}, A becomes:<br>1 2 3<br>4 5 6</p>
 	 * <p>
-	 * this matrix:
+	 * If column dimensions are incompatible, this matrix's column dimension is preserved. If the specified matrix
+	 * has fewer columns, the missing cells in the appended rows are filled with null. If it has more,
+	 * excess columns from the specified matrix are ignored.
 	 * </p>
-	 * <p>
-	 * 1,2,3
-	 * </p>
-	 * <p>
-	 * Second matrix:
-	 * </p>
-	 * <p>
-	 * 4,5,6
-	 * </p>
-	 * <p>
-	 * After this method matrix will be 2 X 3 </br> </br> 1,2,3 </br> 4,5,6
-	 * </p>
-	 * <p>
-	 * If there will be some incompatible dimensions than matrix will be resized
-	 * automatically, so there may be some new values as null or less values if
-	 * matrix column dimension is bigger then this matrix column dimension.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if matrix is null.
+	 *
+	 * @param matrix The matrix whose rows are to be added to this matrix.
+	 * @throws NullPointerException if {@code matrix} is null.
 	 */
 	void addMatrixAtLine(IDataMatrix<Data> matrix);
 
 	/**
-	 * Adds new matrix to the end of this matrix. Both matrix values will be
-	 * copied and column dimension of this new matrix will be same , but line
-	 * dimension will be changed : this.linedimension + matrix.linedimension.
-	 * <p>
-	 * For example:
-	 * </p>
-	 * <p>
-	 * this matrix:
-	 * </p>
-	 * <p>
-	 * 1,2,3
-	 * </p>
-	 * <p>
-	 * Second matrix:
-	 * </p>
-	 * <p>
-	 * 4,5,6
-	 * </p>
-	 * <p>
-	 * After this method matrix will be 2 X 3 </br> </br> 1,2,3 </br> 4,5,6
-	 * <p>
-	 * If there will be some incompatible dimensions than matrix will be resized
-	 * automatically, so there may be some new values filled with defaultValue
-	 * or less values if matrix column dimension is bigger then this matrix
-	 * column dimension.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if matrix is null.
+	 * Appends the rows of the specified {@code matrix} to the end of this matrix, using {@code defaultValue}
+	 * to fill any new cells created due to dimension incompatibilities.
+	 * The column dimension of this matrix may be adjusted. If the specified matrix has fewer columns,
+	 * the missing cells in the appended rows are filled with {@code defaultValue}. If it has more,
+	 * excess columns from the specified matrix are ignored. The line dimension of this matrix
+	 * will be increased by the line dimension of the appended matrix.
+	 *
+	 * @param matrix       The matrix whose rows are to be added to this matrix.
+	 * @param defaultValue The value to use for filling new cells if dimensions are incompatible.
+	 * @throws NullPointerException if {@code matrix} is null.
 	 */
 	void addMatrixAtLine(IDataMatrix<Data> matrix, Data defaultValue);
 
 	/**
-	 * Adds new matrix at the las column of this matrix. Both matrix values will
-	 * be copied and line dimension of this new matrix will be same , but column
-	 * dimension will be changed : this.columndimension +
-	 * matrix.columndimension.
+	 * Appends the columns of the specified {@code matrix} to the end (right side) of this matrix.
+	 * The line dimension of this matrix may be adjusted (potentially adding nulls or truncating data from the appended matrix)
+	 * to match the line dimension of this matrix if they are different. The column dimension of this matrix
+	 * will be increased by the column dimension of the appended matrix.
 	 * <p>
-	 * For example:
+	 * If line dimensions are incompatible, this matrix's line dimension is preserved. If the specified matrix
+	 * has fewer lines, the missing cells in the appended columns are filled with null. If it has more,
+	 * excess lines from the specified matrix are ignored.
 	 * </p>
-	 * <p>
-	 * this matrix:
-	 * </p>
-	 * <p>
-	 * 1,2,3
-	 * </p>
-	 * <p>
-	 * Second matrix:
-	 * </p>
-	 * <p>
-	 * 4,5,6
-	 * </p>
-	 * <p>
-	 * After this method matrix will be 1 X 6
-	 * </p>
-	 * <p>
-	 * 1,2,3,4,5,6
-	 * </p>
-	 * <p>
-	 * If there will be some incompatible dimensions than matrix will be resized
-	 * automatically, so there may be some new values as null or less values if
-	 * matrix line dimension is bigger then this matrix line dimension.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if matrix is null.
+	 *
+	 * @param matrix The matrix whose columns are to be added to this matrix.
+	 * @throws NullPointerException if {@code matrix} is null.
 	 */
 	void addMatrixAtcolumn(IDataMatrix<Data> matrix);
 
 	/**
-	 * Adds new matrix at the las column of this matrix. Both matrix values will
-	 * be copied and line dimension of this new matrix will be same , but column
-	 * dimension will be changed : this.columndimension +
-	 * matrix.columndimension.
-	 * <p>
-	 * For example:
-	 * </p>
-	 * <p>
-	 * this matrix:
-	 * </p>
-	 * <p>
-	 * 1,2,3
-	 * </p>
-	 * <p>
-	 * Second matrix:
-	 * </p>
-	 * <p>
-	 * 4,5,6
-	 * </p>
-	 * <p>
-	 * After this method matrix will be 1 X 6
-	 * </p>
-	 * <p>
-	 * 1,2,3,4,5,6
-	 * </p>
-	 * <p>
-	 * If there will be some incompatible dimensions than matrix will be resized
-	 * automatically, so there may be some new values filled with defaultValue
-	 * or less values if matrix line dimension is bigger then this matrix line
-	 * dimension.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if matrix is null.
+	 * Appends the columns of the specified {@code matrix} to the end (right side) of this matrix, using {@code defaultValue}
+	 * to fill any new cells created due to dimension incompatibilities.
+	 * The line dimension of this matrix may be adjusted. If the specified matrix has fewer lines,
+	 * the missing cells in the appended columns are filled with {@code defaultValue}. If it has more,
+	 * excess lines from the specified matrix are ignored. The column dimension of this matrix
+	 * will be increased by the column dimension of the appended matrix.
+	 *
+	 * @param matrix       The matrix whose columns are to be added to this matrix.
+	 * @param defaultValue The value to use for filling new cells if dimensions are incompatible.
+	 * @throws NullPointerException if {@code matrix} is null.
 	 */
 	void addMatrixAtcolumn(IDataMatrix<Data> matrix, Data defaultValue);
 
 	/**
-	 * @param data
-	 *            : Changes whole data of this matrix and dimensions
-	 *            automatically.
-	 *            <p>
-	 *            You also can gave jagged data, it will automatically fit
-	 *            dimensions: It will take max line and column dimensions.
-	 *            </p>
-	 * @param name
-	 *            : Changes name of this data matrix.
-	 * @param id
-	 *            : Changes id of this data matrix.
-	 * @throws NullPointerException
-	 *             if given data or name is null.
-	 * @throws IllegalArgumentException
-	 *             if id is not unique and this kind of id already exists or id
-	 *             is null or empty.
+	 * Replaces the entire content of this matrix (data, name, and ID) with the provided values.
+	 * The matrix dimensions will be inferred from the {@code data} array.
+	 * Jagged arrays are supported; the column dimension will be the maximum length of any row, with shorter rows padded by nulls.
+	 *
+	 * @param data The new 2D array data for the matrix.
+	 * @param name The new name for the matrix.
+	 * @param id   The new unique ID for the matrix.
+	 * @throws NullPointerException     if {@code data} or {@code name} is null.
+	 * @throws IllegalArgumentException if {@code id} is null, empty, or not unique (if applicable to implementation).
 	 */
 	void changeContent(Data[][] data, String name, String id);
 
 	/**
-	 * @param data
-	 *            : Changes whole data of this matrix and dimensions
-	 *            automatically.
-	 *            <p>
-	 *            You also can gave jagged data, it will automatically fit
-	 *            dimensions: It will take max line and column dimensions.
-	 *            </p>
-	 * @param name
-	 *            : Changes name of this data matrix.
-	 * @param id
-	 *            : Changes id of this data matrix.
-	 * @throws NullPointerException
-	 *             if given data or name is null.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if data is not filled at least with one element or if id is
-	 *             not unique and this kind of id already exists or id is null
-	 *             or empty.
+	 * Replaces the entire content of this matrix (data, name, and ID) with the provided values.
+	 * The matrix dimensions will be inferred from the {@code data} list of lists.
+	 * Jagged lists (inner lists of different sizes) are supported; the column dimension will be the maximum size of any inner list,
+	 * with shorter rows effectively padded by nulls.
+	 *
+	 * @param data The new list of lists data for the matrix.
+	 * @param name The new name for the matrix.
+	 * @param id   The new unique ID for the matrix.
+	 * @throws NullPointerException     if {@code data} (or any inner list) or {@code name} is null.
+	 * @throws IllegalArgumentException if {@code data} is empty, or if {@code id} is null, empty, or not unique (if applicable to implementation).
 	 */
-	void changeContent(List<List<Data>> data, String name,
-                       String id);
+	void changeContent(List<List<Data>> data, String name, String id);
 
 	/**
-	 * @param data
-	 *            : Changes whole data of this matrix and dimensions
-	 *            automatically.
-	 *            <p>
-	 *            You also can gave jagged data, it will automatically fit
-	 *            dimensions: It will take max line and column dimensions.
-	 *            </p>
-	 * @param name
-	 *            : Changes name of this data matrix.
-	 * @throws NullPointerException
-	 *             if given data or name is null.
+	 * Replaces the data and name of this matrix. The ID remains unchanged.
+	 * The matrix dimensions will be inferred from the {@code data} array.
+	 *
+	 * @param data The new 2D array data for the matrix.
+	 * @param name The new name for the matrix.
+	 * @throws NullPointerException if {@code data} or {@code name} is null.
 	 */
 	void changeContent(Data[][] data, String name);
 
 	/**
-	 * @param data
-	 *            : Changes whole data of this matrix and dimensions
-	 *            automatically.
-	 *            <p>
-	 *            You also can gave jagged data, it will automatically fit
-	 *            dimensions: It will take max line and column dimensions.
-	 *            </p>
-	 * @param name
-	 *            : Changes name of this data matrix.
-	 * @throws NullPointerException
-	 *             if given data or name is null.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if data is not filled at least with one element.
+	 * Replaces the data and name of this matrix. The ID remains unchanged.
+	 * The matrix dimensions will be inferred from the {@code data} list of lists.
+	 *
+	 * @param data The new list of lists data for the matrix.
+	 * @param name The new name for the matrix.
+	 * @throws NullPointerException     if {@code data} (or any inner list) or {@code name} is null.
+	 * @throws IllegalArgumentException if {@code data} is empty.
 	 */
 	void changeContent(List<List<Data>> data, String name);
 
 	/**
-	 * @param data
-	 *            : Changes whole data of this matrix and dimensions
-	 *            automatically.
-	 *            <p>
-	 *            You also can gave jagged data, it will automatically fit
-	 *            dimensions: It will take max line and column dimensions.
-	 *            </p>
-	 * @throws NullPointerException
-	 *             if given data is null.
+	 * Replaces the data of this matrix with the given 2D array. Name and ID remain unchanged.
+	 * The matrix dimensions will be inferred from the {@code data} array.
+	 *
+	 * @param data The new 2D array data for the matrix.
+	 * @throws NullPointerException if {@code data} is null.
 	 */
 	@SuppressWarnings(value = "unchecked")
 	void changeContent(Data[]... data);
 
 	/**
-	 * @param data
-	 *            : Changes whole data of this matrix and dimensions
-	 *            automatically.
-	 *            <p>
-	 *            You also can gave jagged data, it will automatically fit
-	 *            dimensions: It will take max line and column dimensions.
-	 *            </p>
-	 * @throws NullPointerException
-	 *             if given data is null.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if data is not filled at least with one element.
+	 * Replaces the data of this matrix with the given list of lists. Name and ID remain unchanged.
+	 * The matrix dimensions will be inferred from the {@code data} list.
+	 *
+	 * @param data The new list of lists data for the matrix.
+	 * @throws NullPointerException     if {@code data} or any inner list is null.
+	 * @throws IllegalArgumentException if {@code data} is empty.
 	 */
 	void changeContent(List<List<Data>> data);
 
 	/**
-	 * Clears only data.</br>Name , id and dimensions are not touched.
+	 * Clears the matrix by setting all its elements to {@code null}.
+	 * The dimensions, name, and ID of the matrix remain unchanged.
 	 */
 	void clean();
 
 	/**
-	 * Copy values from given data.
-	 * <p>
-	 * This method makes auto correction of dimensions .
-	 * </p>
-	 * 
-	 * <p>
-	 * You also can gave jagged data, it will automatically fit dimensions: It
-	 * will take max line and column dimensions.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if given data will be null
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if data is not filled at least with one element.
+	 * Copies the data from the given list of lists into this matrix, resizing it accordingly.
+	 * If the inner lists have different sizes, the matrix column dimension will be
+	 * set to the maximum size found; shorter rows will effectively be padded with nulls.
+	 *
+	 * @param data The list of lists to copy data from.
+	 * @throws NullPointerException     if {@code data} or any inner list is null.
+	 * @throws IllegalArgumentException if {@code data} is empty (contains no rows).
 	 */
 	void copy(List<List<Data>> data);
 
 	/**
-	 * Copy values from given matrix.
-	 * <p>
-	 * This method makes auto correction of dimensions.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if given matrix will be null
+	 * Copies the data from the given {@code IDataMatrix} into this matrix, resizing it accordingly.
+	 * Name and ID of this matrix are not changed.
+	 *
+	 * @param matrix The matrix to copy data from.
+	 * @throws NullPointerException if {@code matrix} is null.
 	 */
 	void copy(IDataMatrix<Data> matrix);
 
 	/**
-	 * Copy values from given data.
-	 * <p>
-	 * This method makes auto correction of dimensions .
-	 * </p>
-	 * 
-	 * <p>
-	 * You also can gave jagged data, it will automatically fit dimensions: It
-	 * will take max line and column dimensions.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if given data will be null
+	 * Copies the data from the given 2D array into this matrix, resizing it accordingly.
+	 * If the input array is jagged, the matrix column dimension will be set to the maximum length found;
+	 * shorter rows will effectively be padded with nulls.
+	 *
+	 * @param data The 2D array to copy data from.
+	 * @throws NullPointerException if {@code data} is null.
 	 */
 	@SuppressWarnings(value = "unchecked")
 	void copy(Data[]... data);
 
 	/**
-	 * fills matrix all data with default value.
+	 * Fills the entire matrix with the specified {@code defaultValue}.
+	 *
+	 * @param defaultValue The value to set for all elements in the matrix.
 	 */
 	void defaultFill(Data defaultValue);
 
 	/**
-	 * Fills places with given data which are null.
-	 * 
-	 * @throws NullPointerException
-	 *             if given data is null.
+	 * Fills all {@code null} (empty) places in the matrix with the specified {@code data} value.
+	 *
+	 * @param data The value to insert into null cells.
+	 * @throws NullPointerException if {@code data} itself is null (unless the intention is to fill with explicit nulls, which this method prevents for clarity).
 	 */
 	void fillEmptyPlaces(Data data);
 
 	/**
-	 * Fills places which are null with first data from this matrix which will
-	 * not be null.
-	 * 
-	 * @throws NullPointerException
-	 *             if all data is null in this matrix.
+	 * Fills all {@code null} (empty) places in the matrix with the first non-null value found within the matrix.
+	 * The search for the first non-null value typically proceeds row by row, then column by column.
+	 *
+	 * @throws NullPointerException if all elements in the matrix are currently {@code null}, as no value can be found to fill with.
 	 */
 	void fillEmptyPlaces();
 
 	/**
-	 * @return column which is located on given place (columnIndex).
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if given columnIndex is out of this matrix column dimension
-	 *             range.
+	 * Retrieves the column at the specified {@code columnIndex} as an array of {@code Object}.
+	 *
+	 * @param columnIndex The index of the column to retrieve.
+	 * @return An array containing the elements of the specified column.
+	 * @throws ArrayIndexOutOfBoundsException if {@code columnIndex} is out of the matrix's column dimension range.
 	 */
 	Object[] getColumn(int columnIndex);
 
 	/**
-	 * @return column stored in List which is located on given place
-	 *         (columnIndex).
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if given columnIndex is out of this matrix column dimension
-	 *             range.
+	 * Retrieves the column at the specified {@code columnIndex} as a {@code List<Data>}.
+	 *
+	 * @param columnIndex The index of the column to retrieve.
+	 * @return A list containing the elements of the specified column.
+	 * @throws ArrayIndexOutOfBoundsException if {@code columnIndex} is out of the matrix's column dimension range.
 	 */
 	List<Data> getColumnAsList(int columnIndex);
 
 	/**
-	 * @return column dimension of this matrix.
+	 * Returns the number of columns in this matrix.
+	 *
+	 * @return The column dimension of this matrix.
 	 */
 	int getColumnDimension();
 
 	/**
-	 * @return column indexes of empty places (place which contains null).
+	 * Returns a list of column indexes where at least one cell in that column is {@code null}.
+	 *
+	 * @return A list of integer indexes for columns containing empty (null) places.
 	 */
 	List<Integer> getColumnIndexesOfEmptyPlaces();
 
 	/**
-	 * @return data that is stored in this matrix.
+	 * Returns the internal data of the matrix as a 2D array of {@code Object}.
+	 * Implementations should clarify if this is a copy or a direct reference.
+	 *
+	 * @return A 2D {@code Object} array representing the matrix data.
 	 */
 	Object[][] getData();
 
 	/**
-	 * @return data which will be stored in List.
+	 * Returns the content of the matrix as a {@code List} of {@code List}s of {@code Data}.
+	 * Each inner list represents a row.
+	 *
+	 * @return A list of lists representing the matrix data.
 	 */
 	List<List<Data>> getDataAsList();
 
 	/**
-	 * @return diagonal on given place (index). If index is 0 then it will
-	 *         return main diagonal, if index is more than 0 it returns up
-	 *         diagonal , if index is less then 0 it returns down diagonal.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if index is not in matrix diagonal dimension range.
+	 * Retrieves a diagonal from the matrix based on the specified {@code index}.
+	 * An {@code index} of 0 returns the main diagonal (top-left to bottom-right).
+	 * A positive {@code index} returns an upper diagonal (above the main diagonal).
+	 * A negative {@code index} returns a lower diagonal (below the main diagonal).
+	 *
+	 * @param index The index of the diagonal to retrieve.
+	 * @return A list containing the elements of the specified diagonal.
+	 * @throws ArrayIndexOutOfBoundsException if {@code index} is not within the valid range of diagonals for the matrix dimensions.
 	 */
 	List<Data> getDiagonal(int index);
 
 	/**
-	 * @return diagonal on given place (index) from right to left direction. If
-	 *         index is 0 then it will return main diagonal, if index is more
-	 *         than 0 it returns up diagonal , if index is less then 0 it
-	 *         returns down diagonal.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if index is not in matrix diagonal dimension range.
+	 * Retrieves a diagonal from the matrix, proceeding from top-right to bottom-left (anti-diagonal direction),
+	 * based on the specified {@code index}.
+	 * An {@code index} of 0 returns the main anti-diagonal.
+	 * A positive {@code index} refers to anti-diagonals "above" (further from the main anti-diagonal towards top-right) it.
+	 * A negative {@code index} refers to anti-diagonals "below" it.
+	 *
+	 * @param index The index of the anti-diagonal to retrieve.
+	 * @return A list containing the elements of the specified anti-diagonal.
+	 * @throws ArrayIndexOutOfBoundsException if {@code index} is not within the valid range for anti-diagonals.
 	 */
 	List<Data> getDiagonal2(int index);
 
 	/**
-	 * @return first value form this matrix which is not null.
-	 * @throws NullPointerException
-	 *             if all values in this matrix are null.
+	 * Retrieves the first non-null value found in this matrix.
+	 * The search order is typically row by row, then column by column.
+	 *
+	 * @return The first non-null data element.
+	 * @throws NullPointerException if all values in this matrix are {@code null}.
 	 */
 	Data getFirstNotNullValue();
 
 	/**
-	 * @return id of this matrix.
+	 * Returns the unique identifier (ID) of this matrix.
+	 *
+	 * @return The ID string of this matrix.
 	 */
 	String getId();
 
 	/**
-	 * @return indexes of the given value, if data matrix contains this value.
-	 *         <p>
-	 *         First value of returned array contains line index and second
-	 *         value contains column index.
-	 *         </p>
-	 *         <p>
-	 *         If data matrix does not contains given value returns null.
-	 *         </p>
-	 *         <p>
-	 *         If there is many values like given value, it will return indexes
-	 *         of first matched value.
-	 *         </p>
+	 * Finds the first occurrence of the specified {@code value} in the matrix and returns its indices.
+	 * The comparison is typically done using the {@code equals} method of the elements.
+	 *
+	 * @param value The value to search for in the matrix.
+	 * @return An integer array {@code [lineIndex, columnIndex]} of the first occurrence, or {@code null} if the value is not found.
 	 */
 	int[] getIndexesOf(Data value);
 
 	/**
-	 * @return indexes of empty places (place which contains null).
-	 *         <p>
-	 *         GetIndexesOfEmptyPlaces.get(0) returns list of line indexes
-	 *         </p>
-	 *         <p>
-	 *         GetIndexesOfEmptyPlaces.get(1) returns list of column indexes
-	 *         </p>
+	 * Returns a list containing two lists: the first is a list of line indexes of all empty (null) places,
+	 * and the second is a list of corresponding column indexes.
+	 * {@code getIndexesOfEmptyPlaces().get(0)} returns line indexes.
+	 * {@code getIndexesOfEmptyPlaces().get(1)} returns column indexes.
+	 *
+	 * @return A list of two lists, representing the line and column indexes of empty cells.
 	 */
 	List<List<Integer>> getIndexesOfEmptyPlaces();
 
 	/**
-	 * @return indexes of maximum value of this matrix. Comparable should be
-	 *         implemented by data which is stored in this matrix.
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null.
-	 * @throws ClassCastException
-	 *             if stored data does not implements Comparable interface.
+	 * Finds the maximum value in the matrix and returns its indices.
+	 * Requires that the data type {@code Data} implements {@link Comparable}.
+	 *
+	 * @return An integer array {@code [lineIndex, columnIndex]} of the maximum value.
+	 * @throws NullPointerException if the matrix contains any {@code null} values, as they cannot be compared.
+	 * @throws ClassCastException   if the data stored in the matrix does not implement {@code Comparable}.
 	 */
 	int[] getIndexesOfMaxValue();
 
 	/**
-	 * @return indexes of maximum value of this matrix.
-	 * 
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null or given comparator is
-	 *             null.
+	 * Finds the maximum value in the matrix using the provided {@code comparator} and returns its indices.
+	 *
+	 * @param comparator The comparator to use for comparing data elements.
+	 * @return An integer array {@code [lineIndex, columnIndex]} of the maximum value.
+	 * @throws NullPointerException if the matrix contains any {@code null} values (unless the comparator handles them) or if {@code comparator} is null.
 	 */
 	int[] getIndexesOfMaxValue(Comparator<Data> comparator);
 
 	/**
-	 * @return indexes of minimum value of this matrix. Comparable should be
-	 *         implemented by data which is stored in this matrix.
-	 * 
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null.
-	 * @throws ClassCastException
-	 *             if stored data does not implements Comparable interface.
+	 * Finds the minimum value in the matrix and returns its indices.
+	 * Requires that the data type {@code Data} implements {@link Comparable}.
+	 *
+	 * @return An integer array {@code [lineIndex, columnIndex]} of the minimum value.
+	 * @throws NullPointerException if the matrix contains any {@code null} values, as they cannot be compared.
+	 * @throws ClassCastException   if the data stored in the matrix does not implement {@code Comparable}.
 	 */
 	int[] getIndexesOfMinValue();
 
 	/**
-	 * @return indexes of minimum value of this matrix.
-	 * 
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null or given comparator is
-	 *             null.
+	 * Finds the minimum value in the matrix using the provided {@code comparator} and returns its indices.
+	 *
+	 * @param comparator The comparator to use for comparing data elements.
+	 * @return An integer array {@code [lineIndex, columnIndex]} of the minimum value.
+	 * @throws NullPointerException if the matrix contains any {@code null} values (unless the comparator handles them) or if {@code comparator} is null.
 	 */
 	int[] getIndexesOfMinValue(Comparator<Data> comparator);
 
 	/**
-	 * @return last element of this matrix.
+	 * Returns the last element of this matrix (element at {@code [lineDimension-1, columnDimension-1]}).
+	 *
+	 * @return The data element at the last position.
+	 * @throws ArrayIndexOutOfBoundsException if the matrix is empty (0x0 or uninitialized).
 	 */
 	Data getLastElement();
 
 	/**
-	 * @return line array of this matrix which is stored on given place
-	 *         (lineIndex).
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if given lineIndex is out of this matrix line dimension
-	 *             range.
+	 * Retrieves the line (row) at the specified {@code lineIndex} as an array of {@code Object}.
+	 *
+	 * @param lineIndex The index of the line to retrieve.
+	 * @return An array containing the elements of the specified line.
+	 * @throws ArrayIndexOutOfBoundsException if {@code lineIndex} is out of the matrix's line dimension range.
 	 */
 	Object[] getLine(int lineIndex);
 
 	/**
-	 * @return list of line of this matrix which is stored on given place
-	 *         (lineIndex).
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if given lineIndex is out of this matrix line dimension
-	 *             range.
+	 * Retrieves the line (row) at the specified {@code lineIndex} as a {@code List<Data>}.
+	 *
+	 * @param lineIndex The index of the line to retrieve.
+	 * @return A list containing the elements of the specified line.
+	 * @throws ArrayIndexOutOfBoundsException if {@code lineIndex} is out of the matrix's line dimension range.
 	 */
 	List<Data> getLineAsList(int lineIndex);
 
 	/**
-	 * @return line dimension of this matrix.
+	 * Returns the number of lines (rows) in this matrix.
+	 *
+	 * @return The line dimension of this matrix.
 	 */
 	int getLineDimension();
 
 	/**
-	 * @return line indexes of empty places (place which contains null).
+	 * Returns a list of line indexes where at least one cell in that line is {@code null}.
+	 *
+	 * @return A list of integer indexes for lines containing empty (null) places.
 	 */
 	List<Integer> getLineIndexesOfEmptyPlaces();
 
 	/**
-	 * @return main diagonal of this matrix.
+	 * Retrieves the main diagonal (top-left to bottom-right) of this matrix as an array of {@code Object}.
+	 * The length of the array will be {@code min(lineDimension, columnDimension)}.
+	 *
+	 * @return An array containing the elements of the main diagonal.
 	 */
 	Object[] getMainDiagonal();
 
 	/**
-	 * @return main diagonal of this matrix with will be stored in List.
+	 * Retrieves the main diagonal (top-left to bottom-right) of this matrix as a {@code List<Data>}.
+	 * The size of the list will be {@code min(lineDimension, columnDimension)}.
+	 *
+	 * @return A list containing the elements of the main diagonal.
 	 */
 	List<Data> getMainDiagonalAsList();
 
 	/**
-	 * @return biggest dimension of this matrix.
+	 * Returns the greater of the line dimension and column dimension of this matrix.
+	 *
+	 * @return The maximum dimension (line or column) of this matrix.
 	 */
 	int getMaxDimension();
 
 	/**
-	 * @return maximum value of this matrix. Comparable should be implemented by
-	 *         data which is stored in this matrix.
-	 * 
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null.
-	 * @throws ClassCastException
-	 *             if stored data does not implements Comparable interface.
+	 * Finds and returns the maximum value in the entire matrix.
+	 * Requires that the data type {@code Data} implements {@link Comparable}.
+	 *
+	 * @return The maximum data element in the matrix.
+	 * @throws NullPointerException if the matrix contains any {@code null} values.
+	 * @throws ClassCastException   if the data stored does not implement {@code Comparable}.
 	 */
 	Data getMaxValue();
 
 	/**
-	 * @return maximum value of this matrix.
-	 * 
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null or given comparator is
-	 *             null.
+	 * Finds and returns the maximum value in the entire matrix using the provided {@code comparator}.
+	 *
+	 * @param comparator The comparator to use for comparing data elements.
+	 * @return The maximum data element in the matrix according to the comparator.
+	 * @throws NullPointerException if the matrix contains any {@code null} values (unless handled by comparator) or if {@code comparator} is null.
 	 */
 	Data getMaxValue(Comparator<Data> comparator);
 
 	/**
-	 * @return maximum value of column which locates on given index
-	 *         (columnIndex). Comparable should be implemented by data which is
-	 *         stored in this matrix.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if columnIndex is out of this matrix column dimension range.
-	 * @throws ClassCastException
-	 *             if data witch is stored in this matrix does not implements
-	 *             Comparable interface.
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null.
+	 * Finds and returns the maximum value in the specified column.
+	 * Requires that the data type {@code Data} implements {@link Comparable}.
+	 *
+	 * @param columnIndex The index of the column to search.
+	 * @return The maximum data element in the specified column.
+	 * @throws ArrayIndexOutOfBoundsException if {@code columnIndex} is out of range.
+	 * @throws NullPointerException           if the column contains any {@code null} values.
+	 * @throws ClassCastException             if the data stored does not implement {@code Comparable}.
 	 */
 	Data getMaxValueOfColumn(int columnIndex);
 
 	/**
-	 * @return maximum value of column which locates on given index
-	 *         (columnIndex).
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if columnIndex is out of this matrix line dimension range.
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null or given comparator is
-	 *             null.
+	 * Finds and returns the maximum value in the specified column using the provided {@code comparator}.
+	 *
+	 * @param columnIndex The index of the column to search.
+	 * @param comparator  The comparator to use for comparing data elements.
+	 * @return The maximum data element in the specified column according to the comparator.
+	 * @throws ArrayIndexOutOfBoundsException if {@code columnIndex} is out of range.
+	 * @throws NullPointerException           if the column contains any {@code null} values (unless handled by comparator) or if {@code comparator} is null.
 	 */
 	Data getMaxValueOfColumn(int columnIndex, Comparator<Data> comparator);
 
 	/**
-	 * @return maximum value of line which locates on given index (lineIndex).
-	 *         Comparable should be implemented by data which is stored in this
-	 *         matrix.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if lineIndex is out of this matrix line dimension range.
-	 * @throws ClassCastException
-	 *             if data witch is stored in this matrix does not implements
-	 *             Comparable interface.
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null.
+	 * Finds and returns the maximum value in the specified line (row).
+	 * Requires that the data type {@code Data} implements {@link Comparable}.
+	 *
+	 * @param lineIndex The index of the line to search.
+	 * @return The maximum data element in the specified line.
+	 * @throws ArrayIndexOutOfBoundsException if {@code lineIndex} is out of range.
+	 * @throws NullPointerException           if the line contains any {@code null} values.
+	 * @throws ClassCastException             if the data stored does not implement {@code Comparable}.
 	 */
 	Data getMaxValueOfLine(int lineIndex);
 
 	/**
-	 * @return maximum value of line which locates on given index (lineIndex).
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if lineIndex is out of this matrix line dimension range.
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null or given comparator is
-	 *             null.
+	 * Finds and returns the maximum value in the specified line (row) using the provided {@code comparator}.
+	 *
+	 * @param lineIndex  The index of the line to search.
+	 * @param comparator The comparator to use for comparing data elements.
+	 * @return The maximum data element in the specified line according to the comparator.
+	 * @throws ArrayIndexOutOfBoundsException if {@code lineIndex} is out of range.
+	 * @throws NullPointerException           if the line contains any {@code null} values (unless handled by comparator) or if {@code comparator} is null.
 	 */
 	Data getMaxValueOfLine(int lineIndex, Comparator<Data> comparator);
 
 	/**
-	 * @return smallest dimension of this matrix.
+	 * Returns the smaller of the line dimension and column dimension of this matrix.
+	 *
+	 * @return The minimum dimension (line or column) of this matrix.
 	 */
 	int getMinDimension();
 
 	/**
-	 * @return minimum value of this matrix. Comparable should be implemented by
-	 *         data which is stored in this matrix.
-	 * 
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null.
-	 * @throws ClassCastException
-	 *             if stored data does not implements Comparable interface.
+	 * Finds and returns the minimum value in the entire matrix.
+	 * Requires that the data type {@code Data} implements {@link Comparable}.
+	 *
+	 * @return The minimum data element in the matrix.
+	 * @throws NullPointerException if the matrix contains any {@code null} values.
+	 * @throws ClassCastException   if the data stored does not implement {@code Comparable}.
 	 */
 	Data getMinValue();
 
 	/**
-	 * @return minimum value of this matrix.
-	 * 
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null or given comparator is
-	 *             null.
-	 * @throws ClassCastException
+	 * Finds and returns the minimum value in the entire matrix using the provided {@code comparator}.
+	 *
+	 * @param comparator The comparator to use for comparing data elements.
+	 * @return The minimum data element in the matrix according to the comparator.
+	 * @throws NullPointerException if the matrix contains any {@code null} values (unless handled by comparator) or if {@code comparator} is null.
+	 * @throws ClassCastException if elements are not mutually comparable with the given comparator.
 	 */
 	Data getMinValue(Comparator<Data> comparator);
 
 	/**
-	 * @return minimum value of column which locates on given index
-	 *         (columnIndex). Comparable should be implemented by data which is
-	 *         stored in this matrix.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if columnIndex is out of this matrix column dimension range.
-	 * @throws ClassCastException
-	 *             if data witch is stored in this matrix does not implements
-	 *             Comparable interface.
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null.
+	 * Finds and returns the minimum value in the specified column.
+	 * Requires that the data type {@code Data} implements {@link Comparable}.
+	 *
+	 * @param columnIndex The index of the column to search.
+	 * @return The minimum data element in the specified column.
+	 * @throws ArrayIndexOutOfBoundsException if {@code columnIndex} is out of range.
+	 * @throws NullPointerException           if the column contains any {@code null} values.
+	 * @throws ClassCastException             if the data stored does not implement {@code Comparable}.
 	 */
 	Data getMinValueOfColumn(int columnIndex);
 
 	/**
-	 * @return minimum value of column which locates on given index
-	 *         (columnIndex).
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if columnIndex is out of this matrix line dimension range.
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null or given comparator is
-	 *             null.
+	 * Finds and returns the minimum value in the specified column using the provided {@code comparator}.
+	 *
+	 * @param columnIndex The index of the column to search.
+	 * @param comparator  The comparator to use for comparing data elements.
+	 * @return The minimum data element in the specified column according to the comparator.
+	 * @throws ArrayIndexOutOfBoundsException if {@code columnIndex} is out of range.
+	 * @throws NullPointerException           if the column contains any {@code null} values (unless handled by comparator) or if {@code comparator} is null.
 	 */
 	Data getMinValueOfColumn(int columnIndex, Comparator<Data> comparator);
 
 	/**
-	 * @return minimum value of line which locates on given index (lineIndex).
-	 *         Comparable should be implemented by data which is stored in this
-	 *         matrix.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if lineIndex is out of this matrix line dimension range.
-	 * @throws ClassCastException
-	 *             if data witch is stored in this matrix does not implements
-	 *             Comparable interface.
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null.
+	 * Finds and returns the minimum value in the specified line (row).
+	 * Requires that the data type {@code Data} implements {@link Comparable}.
+	 *
+	 * @param lineIndex The index of the line to search.
+	 * @return The minimum data element in the specified line.
+	 * @throws ArrayIndexOutOfBoundsException if {@code lineIndex} is out of range.
+	 * @throws NullPointerException           if the line contains any {@code null} values.
+	 * @throws ClassCastException             if the data stored does not implement {@code Comparable}.
 	 */
 	Data getMinValueOfLine(int lineIndex);
 
 	/**
-	 * @return minimum value of line which locates on given index (lineIndex).
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if lineIndex is out of this matrix line dimension range.
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null or given comparator is
-	 *             null.
+	 * Finds and returns the minimum value in the specified line (row) using the provided {@code comparator}.
+	 *
+	 * @param lineIndex  The index of the line to search.
+	 * @param comparator The comparator to use for comparing data elements.
+	 * @return The minimum data element in the specified line according to the comparator.
+	 * @throws ArrayIndexOutOfBoundsException if {@code lineIndex} is out of range.
+	 * @throws NullPointerException           if the line contains any {@code null} values (unless handled by comparator) or if {@code comparator} is null.
 	 */
 	Data getMinValueOfLine(int lineIndex, Comparator<Data> comparator);
 
 	/**
-	 * @return name of this matrix.
+	 * Returns the name of this matrix.
+	 *
+	 * @return The name string of this matrix.
 	 */
 	String getName();
 
 	/**
-	 * @return number of stored data.
+	 * Returns the total number of elements in this matrix (i.e., {@code lineDimension * columnDimension}).
+	 *
+	 * @return The total number of elements.
 	 */
 	int getNumberOfElements();
 
 	/**
-	 * @return second diagonal of this matrix.
+	 * Retrieves the secondary diagonal (top-right to bottom-left, also known as anti-diagonal or counter-diagonal)
+	 * of this matrix as an array of {@code Object}.
+	 * The length of the array will be {@code min(lineDimension, columnDimension)}.
+	 *
+	 * @return An array containing the elements of the secondary diagonal.
 	 */
 	Object[] getSecondDiagonal();
 
 	/**
-	 * @return second diagonal of this matrix with will be stored in List.
+	 * Retrieves the secondary diagonal (top-right to bottom-left) of this matrix as a {@code List<Data>}.
+	 * The size of the list will be {@code min(lineDimension, columnDimension)}.
+	 *
+	 * @return A list containing the elements of the secondary diagonal.
 	 */
 	List<Data> getSecondDiagonalAsList();
 
 	/**
-	 * @return value form the given place.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             If given place is out of the range of this matrix dimensions.
+	 * Retrieves the value at the specified {@code lineIndex} and {@code columnIndex}.
+	 *
+	 * @param lineIndex   The line (row) index of the desired element.
+	 * @param columnIndex The column index of the desired element.
+	 * @return The data element at the specified position.
+	 * @throws ArrayIndexOutOfBoundsException if {@code lineIndex} or {@code columnIndex} is out of the matrix's dimension range.
 	 */
 	Data getValue(int lineIndex, int columnIndex);
 
 	/**
-	 * Inserts column in any places that you want.
-	 * <p>
-	 * Given index can be negative and it will add column at the head of this
-	 * matrix.
-	 * </p>
-	 * <p>
-	 * If index will be out of the range of dimension this method will resize
-	 * matrix automatically.
-	 * </p>
+	 * Inserts a new, empty column (filled with nulls) at the specified {@code index}.
+	 * Existing columns at or after {@code index} are shifted to the right.
+	 * If {@code index} is negative, columns are added at the beginning (e.g., index -1 adds one column at the start).
+	 * If {@code index} is greater than the current column dimension, the matrix is resized, and columns are added at the end.
+	 *
+	 * @param index The index at which to insert the new column.
 	 */
 	void insertColumn(int index);
 
 	/**
-	 * Inserts column in any places that you want and fill with default value.
-	 * <p>
-	 * Given index can be negative and it will add column at the head of this
-	 * matrix.
-	 * </p>
-	 * <p>
-	 * If index will be out of the range of dimension this method will resize
-	 * matrix automatically.
-	 * </p>
-	 * <p>
-	 * Fills all newly created empty places.
-	 * </p>
+	 * Inserts a new column filled with {@code defaultValue} at the specified {@code index}.
+	 * Existing columns at or after {@code index} are shifted to the right.
+	 * Handles negative {@code index} and out-of-range {@code index} by resizing and appropriately placing the new column,
+	 * filling any newly created empty cells in other parts of the matrix due to resizing with nulls, and the specified column with {@code defaultValue}.
+	 *
+	 * @param index        The index at which to insert the new column.
+	 * @param defaultValue The value to fill the new column with.
 	 */
 	void insertColumn(int index, Data defaultValue);
 
 	/**
-	 * Inserts column in any places that you want and copy values from given
-	 * columnArray to newly created column.
-	 * <p>
-	 * Given index can be negative and it will add column at the head of this
-	 * matrix.
-	 * </p>
-	 * <p>
-	 * If columnArray length is bigger then this matrix column dimension than
-	 * copied will be only column dimension number of data, other data will be
-	 * ignored.
-	 * </p>
-	 * <p>
-	 * If columnArray length is less then this matrix column dimension than
-	 * copied will be all columnArray and other places of this line will be
-	 * null.
-	 * </p>
-	 * <p>
-	 * Fills all newly created empty places.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if given columnArray is null.
+	 * Inserts a new column populated with values from {@code columnArray} at the specified {@code index}.
+	 * Existing columns are shifted. Handles negative/out-of-range {@code index} by resizing.
+	 * If {@code columnArray} length differs from line dimension, behavior is similar to {@link #addColumn(Data...)}.
+	 * Other newly created cells (due to resizing for index placement) are filled with nulls.
+	 *
+	 * @param index       The index at which to insert.
+	 * @param columnArray The data for the new column.
+	 * @throws NullPointerException if {@code columnArray} is null.
 	 */
 	@SuppressWarnings(value = "unchecked")
 	void insertColumn(int index, Data... columnArray);
 
 	/**
-	 * Inserts column in any places that you want and copy values from given
-	 * columnList to newly created column.
-	 * <p>
-	 * Given index can be negative and it will add line at the head of this
-	 * matrix.
-	 * </p>
-	 * <p>
-	 * If columnList size is bigger then this matrix column dimension than
-	 * copied will be only column dimension number of data, other data will be
-	 * ignored.
-	 * </p>
-	 * <p>
-	 * If columnList size is less then this matrix column dimension than copied
-	 * will be all columnList and other places of this column will be null.
-	 * </p>
-	 * <p>
-	 * Fills all newly created empty places.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if given columnList is null.
+	 * Inserts a new column populated with values from {@code columnList} at the specified {@code index}.
+	 * Similar behavior to {@link #insertColumn(int, Data...)} regarding index handling and list size differences.
+	 *
+	 * @param index      The index at which to insert.
+	 * @param columnList The data for the new column.
+	 * @throws NullPointerException if {@code columnList} is null.
 	 */
 	void insertColumn(int index, List<Data> columnList);
 
 	/**
-	 * Inserts given data in this matrix in the given place (lineIndex) ,
-	 * (columnIndex). If dimensions will not be in range this method will
-	 * automatically resize this matrix.
+	 * Inserts the given 2D {@code data} array as a block into this matrix, starting at {@code [lineIndex, columnIndex]}.
+	 * The current matrix may be resized to accommodate the inserted data. Cells outside the inserted block
+	 * that are part of the resized area (if any) are filled with nulls.
 	 * <p>
+	 * Example: Inserting a 2x2 block at (1,1) in a 3x3 matrix might result in a 5x5 matrix if the original
+	 * content is pushed out.
 	 * </p>
-	 * For example:</br>DataMatrix<Integer> dm = new DataMatrix<>(3, new
-	 * Integer(0));</br> dm.insertData(1, 1, new Integer[]{1,1},new
-	 * Integer[]{1,1});</br>Result:</br> Dimensions: 5 X 5</br> 0 null null 0 0
-	 * </br> null 1 1 null null </br> null 1 1 null null </br> 0 null null 0 0
-	 * </br> 0 null null 0 0 </br>
-	 * <p>
-	 * Example 2:</br>dm.insertData(0, 4, new Integer[]{1,1},new
-	 * Integer[]{1,1});</br> Result:</br> Dimensions: 3 X 6</br> 0 0 0 null 1 1
-	 * </br> 0 0 0 null 1 1 </br> 0 0 0 null null null </br>
-	 * </p>
-	 * <p>
-	 * <p>
-	 * Example 3:</br>dm.insertData(4, 0, new Integer[]{1,1},new
-	 * Integer[]{1,1});</br> Dimensions: 6 X 3 </br> 0 0 0 </br> 0 0 0 </br> 0 0
-	 * 0 </br> null null null </br> 1 1 null </br> 1 1 null </br>
-	 * </p>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if indexes are negative.
-	 * @throws NullPointerException
-	 *             if given data is null.
+	 * @param lineIndex   The starting line index for insertion.
+	 * @param columnIndex The starting column index for insertion.
+	 * @param data        The 2D array of data to insert.
+	 * @throws IllegalArgumentException if {@code lineIndex} or {@code columnIndex} are negative.
+	 * @throws NullPointerException     if {@code data} is null.
 	 */
 	@SuppressWarnings(value = "unchecked")
 	void insertData(int lineIndex, int columnIndex, Data[]... data);
 
 	/**
-	 * Inserts given data in this matrix in the given place (lineIndex) ,
-	 * (columnIndex).If dimensions will not be in range this method will
-	 * automatically resize this matrix.
-	 * <p>
-	 * </p>
-	 * For example:</br>DataMatrix<Integer> dm = new DataMatrix<>(3, new
-	 * Integer(0));</br> List<List<Integer>> data = new ArrayList<>();</br>
-	 * List<Integer> innerData = new ArrayList<>();</br> innerData.add(1);</br>
-	 * innerData.add(1);</br> data.add(innerData);</br>
-	 * data.add(innerData);</br> dm.insertData(1, 1, data);</br>
-	 * </br>Result:</br> Dimensions: 5 X 5</br> 0 null null 0 0 </br> null 1 1
-	 * null null </br> null 1 1 null null </br> 0 null null 0 0 </br> 0 null
-	 * null 0 0 </br>
-	 * <p>
-	 * Example 2:</br>dm.insertData(0, 4, data);</br> Result:</br> Dimensions: 3
-	 * X 6</br> 0 0 0 null 1 1 </br> 0 0 0 null 1 1 </br> 0 0 0 null null null
-	 * </br>
-	 * </p>
-	 * <p>
-	 * <p>
-	 * Example 3:</br>dm.insertData(4, 0, data);</br> Dimensions: 6 X 3 </br> 0
-	 * 0 0 </br> 0 0 0 </br> 0 0 0 </br> null null null </br> 1 1 null </br> 1 1
-	 * null </br>
-	 * </p>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if indexes are negative.
-	 * @throws NullPointerException
-	 *             if given data is null.
+	 * Inserts the given {@code List<List<Data>>} as a block into this matrix, starting at {@code [lineIndex, columnIndex]}.
+	 * Behavior regarding resizing and filling of new cells is similar to {@link #insertData(int, int, Data[][])}.
+	 *
+	 * @param lineIndex   The starting line index for insertion.
+	 * @param columnIndex The starting column index for insertion.
+	 * @param data        The list of lists of data to insert.
+	 * @throws IllegalArgumentException if {@code lineIndex} or {@code columnIndex} are negative.
+	 * @throws NullPointerException     if {@code data} or any inner list is null.
 	 */
-	void insertData(int lineIndex, int columnIndex,
-                    List<List<Data>> data);
+	void insertData(int lineIndex, int columnIndex, List<List<Data>> data);
 
 	/**
-	 * Inserts given value in any place that you want.
-	 * <p>
-	 * If dimensions will be out of matrix dimensions range this method will
-	 * resize matrix automatically (first will be add line then column).
-	 * </p>
-	 * <p>
-	 * Absolute value is taken from line and column indexes: lineIndex =
-	 * Math.abs(lineIndex) and columnINdex= Math.abs(columnIndex)
-	 * </p>
+	 * Inserts the given {@code value} at the specified {@code [lineIndex, columnIndex]}.
+	 * If {@code lineIndex} or {@code columnIndex} are outside the current dimensions, the matrix is resized
+	 * automatically to accommodate the new element. New cells created by resizing (other than the one for {@code value})
+	 * are filled with nulls. Absolute values of indexes are used for placement if negative.
+	 *
+	 * @param lineIndex   The line index for the new element.
+	 * @param columnIndex The column index for the new element.
+	 * @param value       The value to insert.
 	 */
 	void insertElement(int lineIndex, int columnIndex, Data value);
 
 	/**
-	 * Inserts given value in any place that you want.
-	 * <p>
-	 * If dimensions will be out of matrix dimensions range this method will
-	 * resize this matrix automatically (first will be add line then column) and
-	 * fills newly created line(s) and column(s) with default value.
-	 * </p>
-	 * <p>
-	 * Absolute value is taken from line and column indexes: lineIndex =
-	 * Math.abs(lineIndex) and columnINdex= Math.abs(columnIndex)
-	 * </p>
+	 * Inserts the given {@code value} at {@code [lineIndex, columnIndex]}, resizing if necessary.
+	 * New cells created by resizing (other than the one for {@code value}) are filled with {@code defaultValue}.
+	 * Absolute values of indexes are used.
+	 *
+	 * @param lineIndex    The line index for the new element.
+	 * @param columnIndex  The column index for the new element.
+	 * @param value        The value to insert.
+	 * @param defaultValue The value for other new cells created by resizing.
 	 */
-	void insertElement(int lineIndex, int columnIndex, Data value,
-                       Data defaultValue);
+	void insertElement(int lineIndex, int columnIndex, Data value, Data defaultValue);
 
 	/**
-	 * Inserts given value in any place that you want.
-	 * <p>
-	 * If dimensions will be out of matrix dimensions range this method will
-	 * resize this matrix automatically (first will be add line then column) and
-	 * fills newly created line(s) and column(s) with values from lineArray and
-	 * columnArray.
-	 * </p>
-	 * <p>
-	 * Absolute value is taken from line and column indexes: lineIndex =
-	 * Math.abs(lineIndex) and columnINdex= Math.abs(columnIndex)
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if given lineArray or columnArray or both is null.
+	 * Inserts {@code value} at {@code [lineIndex, columnIndex]}, resizing if necessary.
+	 * New lines/columns created by resizing are filled using {@code lineArray} and {@code columnArray} respectively.
+	 * If these arrays are shorter than the required dimension, remaining cells are null. Absolute values of indexes are used.
+	 *
+	 * @param lineIndex   The line index.
+	 * @param columnIndex The column index.
+	 * @param value       The value to insert.
+	 * @param lineArray   Data for newly created parts of the inserted line.
+	 * @param columnArray Data for newly created parts of the inserted column.
+	 * @throws NullPointerException if {@code lineArray} or {@code columnArray} is null.
 	 */
-	void insertElement(int lineIndex, int columnIndex, Data value,
-                       Data[] lineArray, Data[] columnArray);
+	void insertElement(int lineIndex, int columnIndex, Data value, Data[] lineArray, Data[] columnArray);
 
 	/**
-	 * Inserts given value in any place that you want.
-	 * <p>
-	 * If dimensions will be out of matrix dimensions range this method will
-	 * resize this matrix automatically (first will be add line then column) and
-	 * fills newly created line(s) and column(s) with values from lineList and
-	 * columnList.
-	 * </p>
-	 * <p>
-	 * Absolute value is taken from line and column indexes: lineIndex =
-	 * Math.abs(lineIndex) and columnINdex= Math.abs(columnIndex)
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if given lineList or columnList or both is null.
+	 * Inserts {@code value} at {@code [lineIndex, columnIndex]}, resizing if necessary.
+	 * New lines/columns created by resizing are filled using {@code lineList} and {@code columnList}.
+	 * Similar behavior to the array version regarding list sizes. Absolute values of indexes are used.
+	 *
+	 * @param lineIndex   The line index.
+	 * @param columnIndex The column index.
+	 * @param value       The value to insert.
+	 * @param lineList    Data for newly created parts of the inserted line.
+	 * @param columnList  Data for newly created parts of the inserted column.
+	 * @throws NullPointerException if {@code lineList} or {@code columnList} is null.
 	 */
-	void insertElement(int lineIndex, int columnIndex, Data value,
-                       List<Data> lineList, List<Data> columnList);
+	void insertElement(int lineIndex, int columnIndex, Data value, List<Data> lineList, List<Data> columnList);
 
 	/**
-	 * Inserts line in any places that you want.
-	 * <p>
-	 * Given index can be negative and it will add line at the head of this
-	 * matrix.
-	 * </p>
-	 * <p>
-	 * If index will be out of the range of dimension this method will resize
-	 * matrix automatically.
-	 * </p>
+	 * Inserts a new, empty line (filled with nulls) at the specified {@code index}.
+	 * Existing lines at or after {@code index} are shifted down.
+	 * Handles negative/out-of-range {@code index} by resizing and appropriately placing the new line.
+	 *
+	 * @param index The index at which to insert the new line.
 	 */
 	void insertLine(int index);
 
 	/**
-	 * Inserts line in any places that you want and fill with default value.
-	 * <p>
-	 * Given index can be negative and it will add line at the head of this
-	 * matrix.
-	 * </p>
-	 * <p>
-	 * If index will be out of the range of dimension this method will resize
-	 * matrix automatically.
-	 * </p>
-	 * <p>
-	 * Fills all newly created empty places.
-	 * </p>
+	 * Inserts a new line filled with {@code defaultValue} at the specified {@code index}.
+	 * Existing lines are shifted. Handles negative/out-of-range {@code index} by resizing.
+	 * Other newly created cells (due to resizing for index placement) are filled with nulls, and the specified line with {@code defaultValue}.
+	 *
+	 * @param index        The index at which to insert.
+	 * @param defaultValue The value to fill the new line with.
 	 */
 	void insertLine(int index, Data defaultValue);
 
 	/**
-	 * Inserts line in any places that you want and copy values from given
-	 * lineArray to newly created line.
-	 * <p>
-	 * Given index can be negative and it will add line at the head of this
-	 * matrix.
-	 * </p>
-	 * <p>
-	 * If lineArray length is bigger then this matrix line dimension than copied
-	 * will be only line dimension number of data, other data will be ignored.
-	 * </p>
-	 * <p>
-	 * If lineArray length is less then this matrix line dimension than copied
-	 * will be all lineArray and other places of this line will be null.
-	 * </p>
-	 * <p>
-	 * Fills all newly created empty places.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if given lineArray is null.
+	 * Inserts a new line populated with values from {@code lineArray} at the specified {@code index}.
+	 * Existing lines are shifted. Handles negative/out-of-range {@code index} by resizing.
+	 * If {@code lineArray} length differs from column dimension, behavior is similar to {@link #addLine(Data...)}.
+	 * Other newly created cells (due to resizing for index placement) are filled with nulls.
+	 *
+	 * @param index     The index at which to insert.
+	 * @param lineArray The data for the new line.
+	 * @throws NullPointerException if {@code lineArray} is null.
 	 */
 	@SuppressWarnings(value = "unchecked")
 	void insertLine(int index, Data... lineArray);
 
 	/**
-	 * Inserts line in any places that you want and copy values from given
-	 * lineList to newly created row.
-	 * <p>
-	 * Given index can be negative and it will add line at the head of this
-	 * matrix.
-	 * </p>
-	 * <p>
-	 * If lineList size is bigger then this matrix line dimension than copied
-	 * will be only line dimension number of data, other data will be ignored.
-	 * </p>
-	 * <p>
-	 * If lineList size is less then this matrix line dimension than copied will
-	 * be all lineList and other places of this line will be null.
-	 * </p>
-	 * <p>
-	 * Fills all newly created empty places.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if given lineList is null.
+	 * Inserts a new line populated with values from {@code lineList} at the specified {@code index}.
+	 * Similar behavior to {@link #insertLine(int, Data...)} regarding index handling and list size differences.
+	 *
+	 * @param index    The index at which to insert.
+	 * @param lineList The data for the new line.
+	 * @throws NullPointerException if {@code lineList} is null.
 	 */
 	void insertLine(int index, List<Data> lineList);
 
 	/**
-	 * Inserts given matrix in this matrix in the given place (lineIndex) ,
-	 * (columnIndex). If dimensions will not be in range this method will
-	 * automatically resize this matrix.</br>
+	 * Inserts the given {@code matrix} as a block into this matrix, starting at {@code [lineIndex, columnIndex]}.
+	 * The current matrix may be resized to accommodate the inserted matrix. Cells outside the inserted block
+	 * that are part of the resized area (if any) are filled with nulls.
 	 * <p>
+	 * Example: Inserting a 2x2 matrix B at (1,1) in a 3x3 matrix A might result in A becoming a 5x5 matrix
+	 * if the original content of A needs to be shifted to make space.
 	 * </p>
-	 * For example:</br>DataMatrix<Integer> dm = new DataMatrix<>(3, new
-	 * Integer(0));</br> dm.insertMatrix(1, 1, new DataMatrix<Integer>(2, new
-	 * Integer(1)));</br>Result:</br> Dimensions: 5 X 5</br> 0 null null 0 0
-	 * </br> null 1 1 null null </br> null 1 1 null null </br> 0 null null 0 0
-	 * </br> 0 null null 0 0 </br>
-	 * <p>
-	 * Example 2:</br>dm.insertMatrix(0, 4, new DataMatrix<Integer>(2, new
-	 * Integer(1)));</br> Result:</br> Dimensions: 3 X 6</br> 0 0 0 null 1 1
-	 * </br> 0 0 0 null 1 1 </br> 0 0 0 null null null </br>
-	 * </p>
-	 * <p>
-	 * <p>
-	 * Example 3:</br>dm.insertMatrix(4, 0, new DataMatrix<Integer>(2, new
-	 * Integer(1)));</br> Dimensions: 6 X 3 </br> 0 0 0 </br> 0 0 0 </br> 0 0 0
-	 * </br> null null null </br> 1 1 null </br> 1 1 null </br>
-	 * </p>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if indexes are negative.
-	 * @throws NullPointerException
-	 *             if given matrix is null.
+	 * @param lineIndex   The starting line index for insertion.
+	 * @param columnIndex The starting column index for insertion.
+	 * @param matrix      The matrix to insert.
+	 * @throws IllegalArgumentException if {@code lineIndex} or {@code columnIndex} are negative.
+	 * @throws NullPointerException     if {@code matrix} is null.
 	 */
 	void insertMatrix(int lineIndex, int columnIndex, IDataMatrix<Data> matrix);
 
 	/**
-	 * Equals method should be override , otherwise equaled will be only
-	 * reference.
-	 * 
-	 * @return true if data matrix contains given value, otherwise returns
-	 *         false.
-	 * 
-	 * @param value
-	 *            that should be checked if exist in this matrix.
+	 * Checks if the matrix contains the specified {@code value}.
+	 * Equality is typically determined by the {@code equals} method of the data elements.
+	 *
+	 * @param value The value to search for.
+	 * @return {@code true} if the matrix contains the value, {@code false} otherwise.
 	 */
 	boolean is(Data value);
 
 	/**
-	 * @return true if given column index is in range [ 0 , columnDimension ]
-	 *         otherwise returns false.
+	 * Checks if the given {@code columnIndex} is a valid column index for this matrix.
+	 * (i.e., {@code 0 <= columnIndex < columnDimension}).
+	 *
+	 * @param columnIndex The column index to check.
+	 * @return {@code true} if valid, {@code false} otherwise.
 	 */
 	boolean isColumnIndex(int columnIndex);
 
 	/**
-	 * @return true if matrix have only one column and many lines , otherwise
-	 *         returns false.
+	 * Checks if this matrix is a column vector (i.e., has one column and more than one line).
+	 *
+	 * @return {@code true} if it is a column vector, {@code false} otherwise.
 	 */
 	boolean isColumnVector();
 
 	/**
-	 * @return true if matrix dimensions are equal to given dimensions:
-	 *         <p>
-	 *         lineDimension should be equal to this matrix line dimension and
-	 *         columnDimension should be equal to this matrix column dimension ,
-	 *         otherwise returns false.
-	 *         </p>
+	 * Checks if the dimensions of this matrix are equal to the specified {@code lineDimension} and {@code columnDimension}.
+	 *
+	 * @param lineDimension   The line dimension to compare against.
+	 * @param columnDimension The column dimension to compare against.
+	 * @return {@code true} if dimensions are equal, {@code false} otherwise.
 	 */
 	boolean isDimensionsEqualTo(int lineDimension, int columnDimension);
 
 	/**
-	 * @return true if every element in this data matrix equals to given
-	 *         parameter (variable) , otherwise returns false.
-	 *         <p>
-	 *         Equals method should be override , otherwise equaled will be only
-	 *         reference.
-	 *         </p>
+	 * Checks if every element in this matrix is equal to the specified {@code variable}.
+	 * Equality is determined by the {@code equals} method of the data elements.
+	 *
+	 * @param variable The value to compare every element against.
+	 * @return {@code true} if all elements are equal to {@code variable}, {@code false} otherwise.
 	 */
 	boolean isEveryElementEqualTo(Data variable);
 
 	/**
-	 * @return true if in this matrix does not exists data like given parameter
-	 *         (variable) , otherwise returns false.
-	 *         <p>
-	 *         Equals method should be override , otherwise equaled will be only
-	 *         reference.
-	 *         </p>
+	 * Checks if no element in this matrix is equal to the specified {@code variable}.
+	 * Equality is determined by the {@code equals} method of the data elements.
+	 *
+	 * @param variable The value to compare against.
+	 * @return {@code true} if no element is equal to {@code variable}, {@code false} otherwise.
 	 */
 	boolean isEveryElementNotEqualTo(Data variable);
 
 	/**
-	 * @return true if given line index is in range [ 0 , lineDimension ] and
-	 *         column index is in range [ 0 , columnDimension ] otherwise
-	 *         returns false.
+	 * Checks if the given {@code [lineIndex, columnIndex]} are valid indices for this matrix.
+	 *
+	 * @param lineIndex   The line index to check.
+	 * @param columnIndex The column index to check.
+	 * @return {@code true} if both indices are valid, {@code false} otherwise.
 	 */
 	boolean isIndexes(int lineIndex, int columnIndex);
 
 	/**
-	 * @return true if given line index is in range [ 0 , lineDimension ]
-	 *         otherwise returns false.
+	 * Checks if the given {@code lineIndex} is a valid line index for this matrix.
+	 * (i.e., {@code 0 <= lineIndex < lineDimension}).
+	 *
+	 * @param lineIndex The line index to check.
+	 * @return {@code true} if valid, {@code false} otherwise.
 	 */
 	boolean isLineIndex(int lineIndex);
 
 	/**
-	 * @return true if matrix have many lines and columns (lineDimension > 1 &&
-	 *         columnDimension > 1) , otherwise returns false.
+	 * Checks if this is a "true" matrix (i.e., has more than one line AND more than one column).
+	 *
+	 * @return {@code true} if {@code lineDimension > 1 && columnDimension > 1}, {@code false} otherwise.
 	 */
 	boolean isMatrix();
 
 	/**
-	 * @return true if this matrix contains even one null, otherwise returns
-	 *         false.
+	 * Checks if this matrix contains at least one {@code null} element.
+	 *
+	 * @return {@code true} if there is at least one null element, {@code false} otherwise.
 	 */
 	boolean isNull();
 
 	/**
-	 * @return true if matrix dimensions are not equal, otherwise returns false.
+	 * Checks if this matrix is rectangular (i.e., line dimension is not equal to column dimension).
+	 *
+	 * @return {@code true} if dimensions are not equal, {@code false} otherwise.
 	 */
 	boolean isRectangular();
 
 	/**
-	 * @return true if matrix contains only one data (dimensions are: 1x1),
-	 *         otherwise returns false.
+	 * Checks if this matrix is a scalar (i.e., has dimensions 1x1).
+	 *
+	 * @return {@code true} if it is a 1x1 matrix, {@code false} otherwise.
 	 */
 	boolean isScalar();
 
 	/**
-	 * @return true if matrix dimensions are equal, otherwise returns false.
+	 * Checks if this matrix is square (i.e., line dimension equals column dimension).
+	 *
+	 * @return {@code true} if dimensions are equal, {@code false} otherwise.
 	 */
 	boolean isSquare();
 
 	/**
-	 * @return true if matrix have only one line and many columns, otherwise
-	 *         returns false.
+	 * Checks if this matrix is a row vector (i.e., has one line and more than one column).
+	 *
+	 * @return {@code true} if it is a row vector, {@code false} otherwise.
 	 */
 	boolean isVector();
 
 	/**
-	 * @return new matrix with dimensions this.columnDimension +
-	 *         matrix.columnDimension X max(this.lineDimension,
-	 *         matrix.lineDimension). All data of this matrices will be in to
-	 *         this new matrix.
-	 * @throws NullPointerException
-	 *             if matrix is null.
+	 * Creates and returns a new matrix by joining the columns of the specified {@code matrix} to the right of this matrix.
+	 * The resulting matrix will have a line dimension equal to {@code max(this.lineDimension, matrix.lineDimension)}
+	 * and a column dimension equal to {@code this.columnDimension + matrix.columnDimension}.
+	 * Cells in the expanded area not covered by either original matrix are filled with nulls.
+	 *
+	 * @param matrix The matrix to join with this one.
+	 * @return A new {@code DataMatrix} instance representing the joined matrix.
+	 * @throws NullPointerException if {@code matrix} is null.
 	 */
 	DataMatrix<Data> joinMatrixAtColumn(IDataMatrix<Data> matrix);
 
 	/**
-	 * @return new matrix with dimensions this.columnDimension +
-	 *         matrix.columnDimension X max(this.lineDimension,
-	 *         matrix.lineDimension). All data of this matrices will be in to
-	 *         this new matrix and if there will be any empty place will fill
-	 *         with defaultValue.
-	 * @throws NullPointerException
-	 *             if matrix is null.
+	 * Creates and returns a new matrix by joining the columns of the specified {@code matrix} to the right of this matrix.
+	 * Uses {@code defaultValue} to fill cells in the expanded area not covered by either original matrix.
+	 *
+	 * @param matrix       The matrix to join with this one.
+	 * @param defaultValue The value for new cells created by differing dimensions.
+	 * @return A new {@code DataMatrix} instance representing the joined matrix.
+	 * @throws NullPointerException if {@code matrix} is null.
 	 */
-	DataMatrix<Data> joinMatrixAtColumn(IDataMatrix<Data> matrix,
-                                        Data defaultValue);
+	DataMatrix<Data> joinMatrixAtColumn(IDataMatrix<Data> matrix, Data defaultValue);
 
 	/**
-	 * @return new matrix with dimensions this.lineDimension +
-	 *         matrix.lineDimension X max(this.columnDimension,
-	 *         matrix.columnDimension). All data of this matrices will be in to
-	 *         this new matrix.
-	 * @throws NullPointerException
-	 *             if matrix is null.
+	 * Creates and returns a new matrix by joining the rows of the specified {@code matrix} below this matrix.
+	 * The resulting matrix will have a column dimension equal to {@code max(this.columnDimension, matrix.columnDimension)}
+	 * and a line dimension equal to {@code this.lineDimension + matrix.lineDimension}.
+	 * Cells in the expanded area not covered by either original matrix are filled with nulls.
+	 *
+	 * @param matrix The matrix to join with this one.
+	 * @return A new {@code DataMatrix} instance representing the joined matrix.
+	 * @throws NullPointerException if {@code matrix} is null.
 	 */
 	DataMatrix<Data> joinMatrixAtLine(IDataMatrix<Data> matrix);
 
 	/**
-	 * @return new matrix with dimensions this.lineDimension +
-	 *         matrix.lineDimension X max(this.columnDimension,
-	 *         matrix.columnDimension). All data of this matrices will be in to
-	 *         this new matrix and if there will be any empty place will fill
-	 *         with defaultValue.
-	 * @throws NullPointerException
-	 *             if matrix is null.
+	 * Creates and returns a new matrix by joining the rows of the specified {@code matrix} below this matrix.
+	 * Uses {@code defaultValue} to fill cells in the expanded area not covered by either original matrix.
+	 *
+	 * @param matrix       The matrix to join with this one.
+	 * @param defaultValue The value for new cells created by differing dimensions.
+	 * @return A new {@code DataMatrix} instance representing the joined matrix.
+	 * @throws NullPointerException if {@code matrix} is null.
 	 */
-	DataMatrix<Data> joinMatrixAtLine(IDataMatrix<Data> matrix,
-                                      Data defaultValue);
+	DataMatrix<Data> joinMatrixAtLine(IDataMatrix<Data> matrix, Data defaultValue);
 
 	/**
-	 * Removes column from given place (index).
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if given index is out of this matrix column dimension range.
-	 * @throws IllegalArgumentException
-	 *             if matrix has only one column.
+	 * Removes the column at the specified {@code index}. Subsequent columns are shifted to the left.
+	 *
+	 * @param index The index of the column to remove.
+	 * @throws ArrayIndexOutOfBoundsException if {@code index} is out of the matrix's column dimension range.
+	 * @throws IllegalArgumentException       if the matrix has only one column and removal would make it empty (0 columns).
 	 */
 	void removeColumn(int index);
 
 	/**
-	 * Removes data at given place and also deletes line and column of this
-	 * matrix.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if given lineIndex or columnIndex are negative or out of this
-	 *             matrix dimensions range.
-	 * @throws IllegalArgumentException
-	 *             if only one line or column is left.
+	 * Removes the element at the specified {@code [lineIndex, columnIndex]} by removing both the entire line
+	 * and the entire column that intersect at this element. This significantly reduces matrix dimensions.
+	 *
+	 * @param lineIndex   The line index of the element whose line and column are to be removed.
+	 * @param columnIndex The column index of the element.
+	 * @throws ArrayIndexOutOfBoundsException if {@code lineIndex} or {@code columnIndex} are out of range.
+	 * @throws IllegalArgumentException       if removing the line or column would result in an invalid matrix (e.g., 0 lines or 0 columns).
 	 */
 	void removeElement(int lineIndex, int columnIndex);
 
 	/**
-	 * Removes last column of this matrix.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if matrix has only one column.
+	 * Removes the last column of this matrix.
+	 *
+	 * @throws IllegalArgumentException if the matrix has only one column and removal would make it empty (0 columns).
 	 */
 	void removeColumn();
 
 	/**
-	 * Removes last line of this matrix.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if matrix has only one line.
+	 * Removes the last line (row) of this matrix.
+	 *
+	 * @throws IllegalArgumentException if the matrix has only one line and removal would make it empty (0 lines).
 	 */
 	void removeLine();
 
 	/**
-	 * Removes line from given place (index).
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if given index is out of this matrix line dimension range.
-	 * @throws IllegalArgumentException
-	 *             if matrix has only one line.
+	 * Removes the line (row) at the specified {@code index}. Subsequent lines are shifted up.
+	 *
+	 * @param index The index of the line to remove.
+	 * @throws ArrayIndexOutOfBoundsException if {@code index} is out of the matrix's line dimension range.
+	 * @throws IllegalArgumentException       if the matrix has only one line and removal would make it empty (0 lines).
 	 */
 	void removeLine(int index);
 
 	/**
-	 * Resize matrix: Matrix can be decreased or increased, it depends on given
-	 * dimensions.
-	 * <p>
-	 * You can gave any dimensions if it would not be zero or negative!
-	 * </p>
-	 * <p>
-	 * If in this matrix will be any data it also will be in resized matrix.
-	 * </p>
-	 * <p>
-	 * if you want to decrease size of this matrix and there is some data, after
-	 * resize data which will be out of the given dimensions will be lost.
-	 * </p>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if given dimensions are negative or zero.
+	 * Resizes the matrix to the specified {@code lineDimension} and {@code columnDimension}.
+	 * If new dimensions are smaller, data is truncated.
+	 * If new dimensions are larger, new cells are filled with {@code null}.
+	 *
+	 * @param lineDimension   The new number of lines (rows).
+	 * @param columnDimension The new number of columns.
+	 * @throws IllegalArgumentException if {@code lineDimension} or {@code columnDimension} are not positive.
 	 */
 	void resize(int lineDimension, int columnDimension);
 
 	/**
-	 * Resize matrix: Matrix can be decreased or increased, it depends on given
-	 * dimensions.
-	 * <p>
-	 * You can gave any dimension if it would not be zero or negative!
-	 * </p>
-	 * <p>
-	 * If in this matrix will be any data it also will be in resized matrix.
-	 * </p>
-	 * <p>
-	 * if you want to decrease size of this matrix and there is some data, after
-	 * resize data which will be out of the given dimensions will be lost.
-	 * </p>
-	 * <p>
-	 * After this resize you will get square matrix.
-	 * </p>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if given dimension is negative or zero.
+	 * Resizes the matrix to a square matrix of the specified {@code squareDimension}.
+	 * Behavior regarding data truncation or null-filling for new cells is the same as {@link #resize(int, int)}.
+	 *
+	 * @param squareDimension The new number of lines and columns.
+	 * @throws IllegalArgumentException if {@code squareDimension} is not positive.
 	 */
 	void resize(int squareDimension);
 
 	/**
-	 * Resize matrix: Matrix can be decreased or increased, it depends on given
-	 * dimensions. Also fills new empty places with default value if you
-	 * increase size and there will be empty places, otherwise it just ignores
-	 * given default value.
-	 * <p>
-	 * You can gave any dimensions if it would not be zero or negative!
-	 * </p>
-	 * <p>
-	 * If in this matrix will be any data it also will be in resized matrix.
-	 * </p>
-	 * <p>
-	 * if you want to decrease size of this matrix and there is some data, after
-	 * resize data which will be out of the given dimensions will be lost.
-	 * </p>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if given dimensions are negative or zero.
+	 * Resizes the matrix to the specified dimensions.
+	 * If new dimensions are smaller, data is truncated.
+	 * If new dimensions are larger, new cells are filled with the {@code defaultValue}.
+	 *
+	 * @param lineDimension   The new number of lines.
+	 * @param columnDimension The new number of columns.
+	 * @param defaultValue    The value for new cells if the matrix is enlarged.
+	 * @throws IllegalArgumentException if {@code lineDimension} or {@code columnDimension} are not positive.
 	 */
 	void resize(int lineDimension, int columnDimension, Data defaultValue);
 
 	/**
-	 * Resize matrix: Matrix can be decreased or increased, it depends on given
-	 * dimensions. Also fills new empty places with default value if you
-	 * increase size and there will be empty places, otherwise it just ignores
-	 * given default value.
-	 * <p>
-	 * You can gave any dimension if it would not be zero or negative!
-	 * </p>
-	 * <p>
-	 * If in this matrix will be any data it also will be in resized matrix.
-	 * </p>
-	 * <p>
-	 * if you want to decrease size of this matrix and there is some data, after
-	 * resize data which will be out of the given dimensions will be lost.
-	 * </p>
-	 * <p>
-	 * After this resize you will get square matrix.
-	 * </p>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if given dimension is negative or zero.
+	 * Resizes the matrix to a square matrix of {@code squareDimension}.
+	 * New cells (if any) are filled with {@code defaultValue}.
+	 *
+	 * @param squareDimension The new number of lines and columns.
+	 * @param defaultValue    The value for new cells if the matrix is enlarged.
+	 * @throws IllegalArgumentException if {@code squareDimension} is not positive.
 	 */
 	void resize(int squareDimension, Data defaultValue);
 
 	/**
-	 * Reverse matrix's column on given place (columnIndex).
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if columnIndex is out of this matrix's column dimension
-	 *             range.
+	 * Reverses the order of elements in the column at the specified {@code columnIndex}.
+	 *
+	 * @param columnIndex The index of the column to reverse.
+	 * @throws ArrayIndexOutOfBoundsException if {@code columnIndex} is out of range.
 	 */
 	void reverseColumn(int columnIndex);
 
 	/**
-	 * Reverse matrix's columns.
+	 * Reverses the order of elements in all columns of this matrix.
 	 */
 	void reverseColumns();
 
 	/**
-	 * Reverse matrix's line on given place (lineIndex).
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if lineIndex is out of this matrix's line dimension range.
+	 * Reverses the order of elements in the line (row) at the specified {@code lineIndex}.
+	 *
+	 * @param lineIndex The index of the line to reverse.
+	 * @throws ArrayIndexOutOfBoundsException if {@code lineIndex} is out of range.
 	 */
 	void reverseLine(int lineIndex);
 
 	/**
-	 * Reverse matrix's lines.
+	 * Reverses the order of elements in all lines (rows) of this matrix.
 	 */
 	void reverseLines();
 
 	/**
-	 * Copy values from columnArray to given column (columnIndex).
-	 * <p>
-	 * If columnArray length is bigger then this matrix column dimension than
-	 * copied will be only column dimension number of data, other data will be
-	 * ignored.
-	 * </p>
-	 * <p>
-	 * If columnArray length is less then this matrix column dimension than
-	 * copied will be all columnArray and other places of this line will be
-	 * null.
-	 * </p>
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if given columnIndex is out of this matrix column dimension
-	 *             range.
-	 * @throws NullPointerException
-	 *             if given columnArray is null.
+	 * Sets the content of the column at {@code columnIndex} with values from {@code columnArray}.
+	 * If {@code columnArray} length is shorter than line dimension, remaining cells are null.
+	 * If longer, excess values are ignored.
+	 *
+	 * @param columnIndex The index of the column to modify.
+	 * @param columnArray The data to set in the column.
+	 * @throws ArrayIndexOutOfBoundsException if {@code columnIndex} is out of range.
+	 * @throws NullPointerException           if {@code columnArray} is null.
 	 */
 	@SuppressWarnings(value = "unchecked")
 	void setColumn(int columnIndex, Data... columnArray);
 
 	/**
-	 * Copy values from columnList to given column (columnIndex).
-	 * <p>
-	 * If columnList size is bigger then this matrix column dimension than
-	 * copied will be only column dimension number of data, other data will be
-	 * ignored.
-	 * </p>
-	 * <p>
-	 * If columnList size is less then this matrix column dimension than copied
-	 * will be all columnList and other places of this line will be null.
-	 * </p>
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if given columnIndex is out of this matrix column dimension
-	 *             range.
-	 * @throws NullPointerException
-	 *             if given columnList is null.
+	 * Sets the content of the column at {@code columnIndex} with values from {@code columnList}.
+	 * Similar behavior to the array version regarding list size.
+	 *
+	 * @param columnIndex The index of the column to modify.
+	 * @param columnList  The data to set in the column.
+	 * @throws ArrayIndexOutOfBoundsException if {@code columnIndex} is out of range.
+	 * @throws NullPointerException           if {@code columnList} is null.
 	 */
 	void setColumn(int columnIndex, List<Data> columnList);
 
 	/**
-	 * Fills column on given place (index) with given value.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if given index is out of this matrix column dimension range.
+	 * Fills all cells in the column at {@code columnIndex} with the specified {@code value}.
+	 *
+	 * @param columnIndex The index of the column to fill.
+	 * @param value       The value to set for all cells in the column.
+	 * @throws ArrayIndexOutOfBoundsException if {@code columnIndex} is out of range.
 	 */
 	void setColumn(int columnIndex, Data value);
 
 	/**
-	 * Stores data in to this data matrix and fills dimensions automatically.
-	 * 
-	 * <p>
-	 * You also can gave jagged data, it will automatically fit dimensions: It
-	 * will take max line and column dimensions.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if given data is null.
+	 * Replaces the entire data of this matrix with the data from the given 2D array {@code data}.
+	 * Dimensions are automatically adjusted. Jagged arrays are supported.
+	 *
+	 * @param data The new 2D array data for the matrix.
+	 * @throws NullPointerException if {@code data} is null.
 	 */
 	@SuppressWarnings(value = "unchecked")
 	void setData(Data[]... data);
 
 	/**
-	 * Stores data in to this data matrix and fills dimensions automatically.
-	 * 
-	 * <p>
-	 * You also can gave jagged data, it will automatically fit dimensions: It
-	 * will take max line and column dimensions.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if given data is null.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if data is not filled at least with one element.
+	 * Replaces the entire data of this matrix with the data from the given {@code List<List<Data>>}.
+	 * Dimensions are automatically adjusted. Jagged lists are supported.
+	 *
+	 * @param data The new list of lists data for the matrix.
+	 * @throws NullPointerException     if {@code data} or any inner list is null.
+	 * @throws IllegalArgumentException if {@code data} is empty.
 	 */
 	void setData(List<List<Data>> data);
 
 	/**
-	 * Fills diagonal on given place (index). If index is 0 then it will fill
-	 * main diagonal, if index is more than 0 it fills up diagonal , if index is
-	 * less then 0 it fills down diagonal.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if index is not in matrix diagonal dimension range.
+	 * Fills the specified diagonal with {@code value}.
+	 * See {@link #getDiagonal(int)} for {@code index} interpretation.
+	 *
+	 * @param index The index of the diagonal to fill.
+	 * @param value The value to set for elements on the diagonal.
+	 * @throws ArrayIndexOutOfBoundsException if {@code index} is not a valid diagonal index.
 	 */
 	void setDiagonal(int index, Data value);
 
 	/**
-	 * Fills diagonal on given place (index) from right to left direction. If
-	 * index is 0 then it will fill main diagonal, if index is more than 0 it
-	 * fills up diagonal , if index is less then 0 it fills down diagonal.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if index is not in matrix diagonal dimension range.
+	 * Fills the specified anti-diagonal (right-to-left) with {@code value}.
+	 * See {@link #getDiagonal2(int)} for {@code index} interpretation.
+	 *
+	 * @param index The index of the anti-diagonal to fill.
+	 * @param value The value to set for elements on the anti-diagonal.
+	 * @throws ArrayIndexOutOfBoundsException if {@code index} is not a valid anti-diagonal index.
 	 */
 	void setDiagonal2(int index, Data value);
 
 	/**
-	 * Sets id to this matrix.
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if id is not unique and this kind of id already exists.
+	 * Sets the unique identifier (ID) for this matrix.
+	 *
+	 * @param id The new ID string.
+	 * @throws IllegalArgumentException if {@code id} is null, empty, or not unique (if applicable to implementation).
 	 */
 	void setId(String id);
 
 	/**
-	 * Sets value to the last element of this matrix.
+	 * Sets the value of the last element of this matrix (element at {@code [lineDimension-1, columnDimension-1]}).
+	 *
+	 * @param value The new value for the last element.
+	 * @throws ArrayIndexOutOfBoundsException if the matrix is empty.
 	 */
 	void setLastElement(Data value);
 
 	/**
-	 * Copy values from lineArray to given line (lineIndex).
-	 * <p>
-	 * If lineArray length is bigger then this matrix line dimension than copied
-	 * will be only line dimension number of data, other data will be ignored.
-	 * </p>
-	 * <p>
-	 * If lineArray length is less then this matrix line dimension than copied
-	 * will be all lineArray and other places of this line will be null.
-	 * </p>
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if given lineIndex is out of this matrix line dimension
-	 *             range.
-	 * @throws NullPointerException
-	 *             if given lineArray is null.
+	 * Sets the content of the line at {@code lineIndex} with values from {@code lineArray}.
+	 * If {@code lineArray} length is shorter than column dimension, remaining cells are null.
+	 * If longer, excess values are ignored.
+	 *
+	 * @param lineIndex The index of the line to modify.
+	 * @param lineArray The data to set in the line.
+	 * @throws ArrayIndexOutOfBoundsException if {@code lineIndex} is out of range.
+	 * @throws NullPointerException           if {@code lineArray} is null.
 	 */
 	@SuppressWarnings(value = "unchecked")
 	void setLine(int lineIndex, Data... lineArray);
 
 	/**
-	 * Copy values from lineList to given line (lineIndex).
-	 * <p>
-	 * If lineList size is bigger then this matrix line dimension than copied
-	 * will be only line dimension number of data, other data will be ignored.
-	 * </p>
-	 * <p>
-	 * If lineList size is less then this matrix line dimension than copied will
-	 * be all lineArray and other places of this line will be null.
-	 * </p>
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if given lineIndex is out of this matrix line dimension
-	 *             range.
-	 * @throws NullPointerException
-	 *             if given lineList is null.
+	 * Sets the content of the line at {@code lineIndex} with values from {@code lineList}.
+	 * Similar behavior to the array version regarding list size.
+	 *
+	 * @param lineIndex The index of the line to modify.
+	 * @param lineList  The data to set in the line.
+	 * @throws ArrayIndexOutOfBoundsException if {@code lineIndex} is out of range.
+	 * @throws NullPointerException           if {@code lineList} is null.
 	 */
 	void setLine(int lineIndex, List<Data> lineList);
 
 	/**
-	 * Fills line on given place (index) with given value.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if given index is out of this matrix line dimension range.
+	 * Fills all cells in the line at {@code lineIndex} with the specified {@code value}.
+	 *
+	 * @param lineIndex The index of the line to fill.
+	 * @param value     The value to set for all cells in the line.
+	 * @throws ArrayIndexOutOfBoundsException if {@code lineIndex} is out of range.
 	 */
 	void setLine(int lineIndex, Data value);
 
 	/**
-	 * Fills main diagonal with given value.
+	 * Fills all cells on the main diagonal (top-left to bottom-right) with {@code value}.
+	 *
+	 * @param value The value to set for elements on the main diagonal.
 	 */
 	void setMainDiagonal(Data value);
 
 	/**
-	 * Copy values from diagonalArray to main diagonal.
-	 * <p>
-	 * If diagonalArray length is bigger then this matrix diagonal dimension
-	 * than copied will be only diagonal dimension number of data, other data
-	 * will be ignored.
-	 * </p>
-	 * <p>
-	 * If diagonalArray size is less then this matrix diagonal dimension than
-	 * copied will be all diagonalArray and other places of this diagonal will
-	 * be null.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if diagonalArray is null.
+	 * Sets the main diagonal with values from {@code diagonalArray}.
+	 * If array length is shorter than min dimension, remaining diagonal cells are null.
+	 * If longer, excess values are ignored.
+	 *
+	 * @param diagonalArray The data for the main diagonal.
+	 * @throws NullPointerException if {@code diagonalArray} is null.
 	 */
 	@SuppressWarnings(value = "unchecked")
 	void setMainDiagonal(Data... diagonalArray);
 
 	/**
-	 * Copy values from diagonalList to main diagonal.
-	 * <p>
-	 * If diagonalList size is bigger then this matrix diagonal dimension than
-	 * copied will be only diagonal dimension number of data, other data will be
-	 * ignored.
-	 * </p>
-	 * <p>
-	 * If diagonalList size is less then this matrix diagonal dimension than
-	 * copied will be all diagonalList and other places of this diagonal will be
-	 * null.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if diagonalList is null.
+	 * Sets the main diagonal with values from {@code diagonalList}.
+	 * Similar behavior to the array version regarding list size.
+	 *
+	 * @param diagonalList The data for the main diagonal.
+	 * @throws NullPointerException if {@code diagonalList} is null.
 	 */
 	void setMainDiagonal(List<Data> diagonalList);
 
 	/**
-	 * Sets name to this matrix.
-	 * 
-	 * @throws NullPointerException
-	 *             if name is null.
+	 * Sets the name for this matrix.
+	 *
+	 * @param name The new name string.
+	 * @throws NullPointerException if {@code name} is null.
 	 */
 	void setName(String name);
 
 	/**
-	 * Fills second diagonal with given value.
+	 * Fills all cells on the secondary diagonal (top-right to bottom-left) with {@code value}.
+	 *
+	 * @param value The value to set for elements on the secondary diagonal.
 	 */
 	void setSecondDiagonal(Data value);
 
 	/**
-	 * Copy values from diagonalArray to second diagonal.
-	 * <p>
-	 * If diagonalArray length is bigger then this matrix diagonal dimension
-	 * than copied will be only diagonal dimension number of data, other data
-	 * will be ignored.
-	 * </p>
-	 * <p>
-	 * If diagonalArray length is less then this matrix diagonal dimension than
-	 * copied will be all diagonalArray and other places of this diagonal will
-	 * be null.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if diagonalArray is null.
+	 * Sets the secondary diagonal with values from {@code diagonalArray}.
+	 * Similar behavior to {@link #setMainDiagonal(Data...)}.
+	 *
+	 * @param diagonalArray The data for the secondary diagonal.
+	 * @throws NullPointerException if {@code diagonalArray} is null.
 	 */
 	@SuppressWarnings(value = "unchecked")
 	void setSecondDiagonal(Data... diagonalArray);
 
 	/**
-	 * Copy values from diagonalList to second diagonal.
-	 * <p>
-	 * If diagonalList size is bigger then this matrix diagonal dimension than
-	 * copied will be only diagonal dimension number of data, other data will be
-	 * ignored.
-	 * </p>
-	 * <p>
-	 * If diagonalList size is less then this matrix diagonal dimension than
-	 * copied will be all diagonalList and other places of this diagonal will be
-	 * null.
-	 * </p>
-	 * 
-	 * @throws NullPointerException
-	 *             if diagonalList is null.
+	 * Sets the secondary diagonal with values from {@code diagonalList}.
+	 * Similar behavior to {@link #setMainDiagonal(List)}.
+	 *
+	 * @param diagonalList The data for the secondary diagonal.
+	 * @throws NullPointerException if {@code diagonalList} is null.
 	 */
 	void setSecondDiagonal(List<Data> diagonalList);
 
 	/**
-	 * Sets value to the given place.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             If given place is out of the range of this matrix dimensions.
+	 * Sets the value at the specified {@code [lineIndex, columnIndex]}.
+	 *
+	 * @param lineIndex   The line index of the element to set.
+	 * @param columnIndex The column index of the element to set.
+	 * @param value       The new value for the element.
+	 * @throws ArrayIndexOutOfBoundsException if {@code lineIndex} or {@code columnIndex} is out of range.
 	 */
 	void setValue(int lineIndex, int columnIndex, Data value);
 
 	/**
-	 * Sorts this matrix column which locates on given index by ascending order.
-	 * Comparable should be implemented by data which is stored in this matrix.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if index is out of this matrix dimension range.
-	 * @throws NullPointerException
-	 * @throws ClassCastException
-	 *             if data witch is stored in this matrix does not implements
-	 *             Comparable interface.
+	 * Sorts the column at the specified {@code index} in ascending order.
+	 * Requires that data type {@code Data} implements {@link Comparable}.
+	 *
+	 * @param index The index of the column to sort.
+	 * @throws ArrayIndexOutOfBoundsException if {@code index} is out of range.
+	 * @throws NullPointerException           if the column contains {@code null} values.
+	 * @throws ClassCastException             if data does not implement {@code Comparable}.
 	 */
 	void sortColumnAsc(int index);
 
 	/**
-	 * Sorts this matrix column which locates on given index.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if index is out of this matrix dimension range.
-	 * @throws NullPointerException
+	 * Sorts the column at the specified {@code index} using the provided {@code comparator}.
+	 *
+	 * @param index      The index of the column to sort.
+	 * @param comparator The comparator to determine the order.
+	 * @throws ArrayIndexOutOfBoundsException if {@code index} is out of range.
+	 * @throws NullPointerException           if {@code comparator} is null or the column contains nulls not handled by comparator.
 	 */
 	void sortColumn(int index, Comparator<Data> comparator);
 
 	/**
-	 * Sorts this matrix column which locates on given index by descending
-	 * order. Comparable should be implemented by data which is stored in this
-	 * matrix.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if index is out of this matrix dimension range.
-	 * @throws NullPointerException
-	 * @throws ClassCastException
-	 *             if data witch is stored in this matrix does not implements
-	 *             Comparable interface.
+	 * Sorts the column at the specified {@code index} in descending order.
+	 * Requires that data type {@code Data} implements {@link Comparable}.
+	 *
+	 * @param index The index of the column to sort.
+	 * @throws ArrayIndexOutOfBoundsException if {@code index} is out of range.
+	 * @throws NullPointerException           if the column contains {@code null} values.
+	 * @throws ClassCastException             if data does not implement {@code Comparable}.
 	 */
 	void sortColumnDesc(int index);
 
 	/**
-	 * Sorts this matrix line which locates on given index by ascending order.
-	 * Comparable should be implemented by data which is stored in this matrix.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if index is out of this matrix dimension range.
-	 * @throws NullPointerException
-	 * @throws ClassCastException
-	 *             if data witch is stored in this matrix does not implements
-	 *             Comparable interface.
+	 * Sorts the line (row) at the specified {@code index} in ascending order.
+	 * Requires that data type {@code Data} implements {@link Comparable}.
+	 *
+	 * @param index The index of the line to sort.
+	 * @throws ArrayIndexOutOfBoundsException if {@code index} is out of range.
+	 * @throws NullPointerException           if the line contains {@code null} values.
+	 * @throws ClassCastException             if data does not implement {@code Comparable}.
 	 */
 	void sortLineAsc(int index);
 
 	/**
-	 * Sorts this matrix line which locates on given index.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if index is out of this matrix dimension range.
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null or given comparator is
-	 *             null.
+	 * Sorts the line (row) at the specified {@code index} using the provided {@code comparator}.
+	 *
+	 * @param index      The index of the line to sort.
+	 * @param comparator The comparator to determine the order.
+	 * @throws ArrayIndexOutOfBoundsException if {@code index} is out of range.
+	 * @throws NullPointerException           if {@code comparator} is null or the line contains nulls not handled by comparator.
 	 */
 	void sortLine(int index, Comparator<Data> comparator);
 
 	/**
-	 * Sorts this matrix line which locates on given index by descending order.
-	 * Comparable should be implemented by data which is stored in this matrix.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if index is out of this matrix dimension range.
-	 * @throws NullPointerException
-	 * @throws ClassCastException
-	 *             if data witch is stored in this matrix does not implements
-	 *             Comparable interface.
+	 * Sorts the line (row) at the specified {@code index} in descending order.
+	 * Requires that data type {@code Data} implements {@link Comparable}.
+	 *
+	 * @param index The index of the line to sort.
+	 * @throws ArrayIndexOutOfBoundsException if {@code index} is out of range.
+	 * @throws NullPointerException           if the line contains {@code null} values.
+	 * @throws ClassCastException             if data does not implement {@code Comparable}.
 	 */
 	void sortLineDesc(int index);
 
 	/**
-	 * Sorts all columns of this matrix by ascending order. Comparable should be
-	 * implemented by data which is stored in this matrix.
-	 * 
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null.
-	 * @throws ClassCastException
-	 *             if data witch is stored in this matrix does not implements
-	 *             Comparable interface.
+	 * Sorts all columns of this matrix in ascending order.
+	 * Requires that data type {@code Data} implements {@link Comparable}.
+	 *
+	 * @throws NullPointerException if any column contains {@code null} values.
+	 * @throws ClassCastException   if data does not implement {@code Comparable}.
 	 */
 	void sortColumnsAsc();
 
 	/**
-	 * Sorts all columns of this matrix.
-	 * 
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null or given comparator is
-	 *             null.
+	 * Sorts all columns of this matrix using the provided {@code comparator}.
+	 *
+	 * @param comparator The comparator to determine the order for each column.
+	 * @throws NullPointerException if {@code comparator} is null or any column contains nulls not handled by comparator.
 	 */
 	void sortColumns(Comparator<Data> comparator);
 
 	/**
-	 * Sorts all columns of this matrix by descending order. Comparable should
-	 * be implemented by data which is stored in this matrix.
-	 * 
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null.
-	 * @throws ClassCastException
-	 *             if data witch is stored in this matrix does not implements
-	 *             Comparable interface.
+	 * Sorts all columns of this matrix in descending order.
+	 * Requires that data type {@code Data} implements {@link Comparable}.
+	 *
+	 * @throws NullPointerException if any column contains {@code null} values.
+	 * @throws ClassCastException   if data does not implement {@code Comparable}.
 	 */
 	void sortColumnsDesc();
 
 	/**
-	 * Sorts all lines of this matrix by ascending order. Comparable should be
-	 * implemented by data which is stored in this matrix.
-	 * 
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null.
-	 * @throws ClassCastException
-	 *             if data witch is stored in this matrix does not implements
-	 *             Comparable interface.
+	 * Sorts all lines (rows) of this matrix in ascending order.
+	 * Requires that data type {@code Data} implements {@link Comparable}.
+	 *
+	 * @throws NullPointerException if any line contains {@code null} values.
+	 * @throws ClassCastException   if data does not implement {@code Comparable}.
 	 */
 	void sortLinesAsc();
 
 	/**
-	 * Sorts all lines of this matrix.
-	 * 
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null or given comparator is
-	 *             null.
+	 * Sorts all lines (rows) of this matrix using the provided {@code comparator}.
+	 *
+	 * @param comparator The comparator to determine the order for each line.
+	 * @throws NullPointerException if {@code comparator} is null or any line contains nulls not handled by comparator.
 	 */
 	void sortLines(Comparator<Data> comparator);
 
 	/**
-	 * Sorts all lines of this matrix by descending order. Comparable should be
-	 * implemented by data which is stored in this matrix.
-	 * 
-	 * @throws NullPointerException
-	 *             if this matrix contains even one null.
-	 * @throws ClassCastException
-	 *             if data witch is stored in this matrix does not implements
-	 *             Comparable interface.
+	 * Sorts all lines (rows) of this matrix in descending order.
+	 * Requires that data type {@code Data} implements {@link Comparable}.
+	 *
+	 * @throws NullPointerException if any line contains {@code null} values.
+	 * @throws ClassCastException   if data does not implement {@code Comparable}.
 	 */
 	void sortLinesDesc();
 
 	/**
-	 * @return sub matrix of this matrix.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if id given indexes are out of range of this matrix
-	 *             dimensions.
-	 * @throws IllegalArgumentException
-	 *             if indexes are given incorrectly.
+	 * Extracts a sub-matrix from this matrix.
+	 * The sub-matrix includes elements from {@code startLineIndex} to {@code endLineIndex} (inclusive)
+	 * and from {@code startColumnIndex} to {@code endColumnIndex} (inclusive).
+	 *
+	 * @param startLineIndex   The starting line index of the sub-matrix.
+	 * @param startColumnIndex The starting column index of the sub-matrix.
+	 * @param endLineIndex     The ending line index of the sub-matrix.
+	 * @param endColumnIndex   The ending column index of the sub-matrix.
+	 * @return A new {@code DataMatrix} instance representing the sub-matrix.
+	 * @throws ArrayIndexOutOfBoundsException if any index is out of range.
+	 * @throws IllegalArgumentException       if {@code startLineIndex > endLineIndex} or {@code startColumnIndex > endColumnIndex}.
 	 */
-	DataMatrix<Data> subMatrix(int startLineIndex, int startColumnIndex,
-                               int endLineIndex, int endColumnIndex);
+	DataMatrix<Data> subMatrix(int startLineIndex, int startColumnIndex, int endLineIndex, int endColumnIndex);
 
 	/**
-	 * Swaps this matrixes, even name and id.
-	 * 
-	 * @throws NullPointerException
-	 *             if given matrix is null.
+	 * Swaps the entire content (data, dimensions, name, ID) of this matrix with the specified {@code matrix}.
+	 *
+	 * @param matrix The matrix to swap content with.
+	 * @throws NullPointerException if {@code matrix} is null.
 	 */
 	void swap(IDataMatrix<Data> matrix);
 
 	/**
-	 * Changes place of tow column witch are stored on given places.
-	 * <p>
-	 * it means that column witch is stored in columnIndex_1 will stored in
-	 * columnIndex_2 and column witch was stored in columnIndex_2 will stored in
-	 * columnIndex_1.
-	 * </p>
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if columnIndex_1 or columnIndex_2 or both are out of this
-	 *             matrix column dimension range.
+	 * Swaps the columns at {@code columnIndex_1} and {@code columnIndex_2}.
+	 *
+	 * @param columnIndex_1 The index of the first column to swap.
+	 * @param columnIndex_2 The index of the second column to swap.
+	 * @throws ArrayIndexOutOfBoundsException if either index is out of range.
 	 */
 	void swapColumns(int columnIndex_1, int columnIndex_2);
 
 	/**
-	 * Changes data between given and this matrix.
-	 * 
-	 * @throws NullPointerException
-	 *             if given matrix is null.
+	 * Swaps only the data (and dimensions) of this matrix with the specified {@code matrix}.
+	 * Name and ID of both matrices remain unchanged.
+	 *
+	 * @param matrix The matrix to swap data with.
+	 * @throws NullPointerException if {@code matrix} is null.
 	 */
 	void swapData(IDataMatrix<Data> matrix);
 
 	/**
-	 * Changes places of tow data on given places.
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if given indexes are out of this matrix dimensions range.
+	 * Swaps the data elements at {@code [lineIndex_1, columnIndex_1]} and {@code [lineIndex_2, columnIndex_2]}.
+	 *
+	 * @param lineIndex_1   The line index of the first element.
+	 * @param columnIndex_1 The column index of the first element.
+	 * @param lineIndex_2   The line index of the second element.
+	 * @param columnIndex_2 The column index of the second element.
+	 * @throws ArrayIndexOutOfBoundsException if any index is out of range.
 	 */
-	void swapData(int lineIndex_1, int columnIndex_1, int lineIndex_2,
-                  int columnIndex_2);
+	void swapData(int lineIndex_1, int columnIndex_1, int lineIndex_2, int columnIndex_2);
 
 	/**
-	 * Changes places to given data_1 and data_2 if both of them exists in this
-	 * matrix.
-	 * <p>
-	 * Equals method should be override for given data parameters.
-	 * </p>
-	 * 
-	 * @throws IllegalArgumentException
-	 *             if this matrix do not contains any of this given data or
-	 *             both.
-	 * @throws NullPointerException
-	 *             if given data_1 or data_2 or both is null.
+	 * Finds the first occurrences of {@code data_1} and {@code data_2} in the matrix and swaps them.
+	 * Element equality is determined by their {@code equals} method.
+	 *
+	 * @param data_1 The first data element to swap.
+	 * @param data_2 The second data element to swap.
+	 * @throws IllegalArgumentException if either {@code data_1} or {@code data_2} (or both) are not found in the matrix.
+	 * @throws NullPointerException     if {@code data_1} or {@code data_2} is null.
 	 */
 	void swapData(Data data_1, Data data_2);
 
 	/**
-	 * Changes place of tow line witch are stored on given places.
-	 * <p>
-	 * it means that line witch is stored in lineIndex_1 will stored in
-	 * lineIndex_2 and line witch was stored in lineIndex_2 will stored in
-	 * lineIndex_1.
-	 * </p>
-	 * 
-	 * @throws ArrayIndexOutOfBoundsException
-	 *             if lineIndex_1 or lineIndex_2 or both are out of this matrix
-	 *             line dimension range.
+	 * Swaps the lines (rows) at {@code lineIndex_1} and {@code lineIndex_2}.
+	 *
+	 * @param lineIndex_1 The index of the first line to swap.
+	 * @param lineIndex_2 The index of the second line to swap.
+	 * @throws ArrayIndexOutOfBoundsException if either index is out of range.
 	 */
 	void swapLines(int lineIndex_1, int lineIndex_2);
 
 	/**
-	 * @return list from this matrix, it means that: All lines will be located
-	 *         side by side together in list started from first line.
+	 * Converts the matrix into a single {@code List<Data>}, with elements added row by row.
+	 *
+	 * @return A list containing all elements of the matrix in row-major order.
 	 */
 	List<Data> toList();
 
 	/**
-	 * @return list from this matrix, it means that: All columns will be located
-	 *         side by side together in list started from first column.
+	 * Converts the matrix into a single {@code List<Data>}, with elements added column by column.
+	 *
+	 * @return A list containing all elements of the matrix in column-major order.
 	 */
 	List<Data> toListByColumn();
 
 	/**
-	 * Transpose this matrix.
-	 * 
-	 * @return Transposed matrix
+	 * Transposes this matrix (swaps rows with columns). This operation modifies the current matrix.
+	 *
+	 * @return A reference to this transposed matrix.
 	 */
 	DataMatrix<Data> transpose();
 
 	/**
-	 * Writes data as DataMatrix in to given file. If data is not primitive than
-	 * Serializable interface should be implemented by this data.
-	 * 
-	 * @throws FileNotFoundException
-	 *             if given file does not exists.
-	 * @throws IOException
-	 *             if there will be some problem with input.
-	 * @throws NullPointerException
-	 *             if given fileName is null or if every element is null.
-	 * @throws NotSerializableException
-	 *             if stored data does not implements Serializable interface.
+	 * Writes the matrix object to a file using Java serialization.
+	 * The data type {@code Data} (if not primitive) must implement {@link java.io.Serializable}.
+	 *
+	 * @param fileName The name of the file to write the serialized object to.
+	 * @throws java.io.FileNotFoundException    if the file exists but is a directory rather than a regular file, does not exist but cannot be created, or cannot be opened for any other reason.
+	 * @throws java.io.IOException              if an I/O error occurs while writing to the file.
+	 * @throws NullPointerException             if {@code fileName} is null.
+	 * @throws java.io.NotSerializableException if any object to be serialized does not implement the {@code java.io.Serializable} interface.
 	 */
-	void writeObject(String fileName) throws java.io.FileNotFoundException,
-			java.io.IOException, NullPointerException,
-			java.io.NotSerializableException;
+	void writeObject(String fileName) throws java.io.FileNotFoundException, java.io.IOException, NullPointerException, java.io.NotSerializableException;
 
 	/**
-	 * Writes data in to given file using toString method for data which is
-	 * stored in this matrix.
-	 * <p>
-	 * Uses one space to separate data.
-	 * </p>
-	 * 
-	 * @throws FileNotFoundException
-	 *             if given file does not exists.
-	 * @throws IOException
-	 *             if there will be some problem with input.
-	 * @throws NullPointerException
-	 *             if given fileName is null or if every element is null.
+	 * Writes the string representation of the matrix data to the specified file.
+	 * Elements are separated by a single space. Each row is on a new line.
+	 *
+	 * @param fileName The name of the file to write to.
+	 * @throws java.io.FileNotFoundException if the file cannot be opened or created.
+	 * @throws java.io.IOException           if an I/O error occurs.
+	 * @throws NullPointerException          if {@code fileName} is null.
 	 */
-	void write(String fileName) throws java.io.FileNotFoundException,
-			java.io.IOException, NullPointerException;
+	void write(String fileName) throws java.io.FileNotFoundException, java.io.IOException, NullPointerException;
 
 	/**
-	 * Writes data in to given file using toString method for data which is
-	 * stored in this matrix.
-	 * <p>
-	 * Data will be separated by given separator.
-	 * </p>
-	 * 
-	 * @throws FileNotFoundException
-	 *             if given file does not exists.
-	 * @throws IOException
-	 *             if there will be some problem with input.
-	 * @throws NullPointerException
-	 *             if given fileName is null or if every element is null.
+	 * Writes the string representation of the matrix data to the specified file, using {@code separator} between elements.
+	 * Each row is on a new line.
+	 *
+	 * @param fileName  The name of the file to write to.
+	 * @param separator The character to use for separating elements in a row.
+	 * @throws java.io.FileNotFoundException if the file cannot be opened or created.
+	 * @throws java.io.IOException           if an I/O error occurs.
+	 * @throws NullPointerException          if {@code fileName} is null.
 	 */
-	void write(String fileName, char separator)
-			throws java.io.FileNotFoundException, java.io.IOException,
-			NullPointerException;
+	void write(String fileName, char separator) throws java.io.FileNotFoundException, java.io.IOException, NullPointerException;
 
 	/**
-	 * Writes data in to the end of the given file if append argument will be
-	 * true. Using toString method for data which is stored in this matrix.
-	 * <p>
-	 * Uses one space to separate data.
-	 * </p>
-	 * 
-	 * @throws FileNotFoundException
-	 *             if given file does not exists.
-	 * @throws IOException
-	 *             if there will be some problem with input.
-	 * @throws NullPointerException
-	 *             if given fileName is null or if every element is null.
+	 * Writes the string representation of the matrix data to the specified file.
+	 * If {@code append} is true, data is written to the end of the file.
+	 * Elements are separated by a single space. Each row is on a new line.
+	 *
+	 * @param fileName The name of the file to write to.
+	 * @param append   If {@code true}, then data will be written to the end of the file rather than the beginning.
+	 * @throws java.io.FileNotFoundException if the file cannot be opened or created.
+	 * @throws java.io.IOException           if an I/O error occurs.
+	 * @throws NullPointerException          if {@code fileName} is null.
 	 */
-	void write(String fileName, boolean append)
-			throws java.io.FileNotFoundException, java.io.IOException,
-			NullPointerException;
+	void write(String fileName, boolean append) throws java.io.FileNotFoundException, java.io.IOException, NullPointerException;
 
 	/**
-	 * Writes data in to the end of the given file if append argument will be
-	 * true. Using toString method for data which is stored in this matrix.
-	 * <p>
-	 * Data will be separated by given separator.
-	 * </p>
-	 * 
-	 * @throws FileNotFoundException
-	 *             if given file does not exists.
-	 * @throws IOException
-	 *             if there will be some problem with input.
-	 * @throws NullPointerException
-	 *             if given fileName is null or if every element is null.
+	 * Writes the string representation of the matrix data to the specified file, using {@code separator}.
+	 * If {@code append} is true, data is written to the end of the file.
+	 *
+	 * @param fileName  The name of the file to write to.
+	 * @param separator The character for separating elements.
+	 * @param append    If {@code true}, data is written to the end of the file.
+	 * @throws java.io.FileNotFoundException if the file cannot be opened or created.
+	 * @throws java.io.IOException           if an I/O error occurs.
+	 * @throws NullPointerException          if {@code fileName} is null.
 	 */
-	void write(String fileName, char separator, boolean append)
-			throws java.io.FileNotFoundException, java.io.IOException,
-			NullPointerException;
+	void write(String fileName, char separator, boolean append) throws java.io.FileNotFoundException, java.io.IOException, NullPointerException;
 
 }

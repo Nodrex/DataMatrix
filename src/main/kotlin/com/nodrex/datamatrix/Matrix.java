@@ -953,126 +953,150 @@ public class Matrix extends DataMatrix<Double> {
 	}
 	
 	/**
-	 * @return eye matrix with given dimensions.
-	 * @throws IllegalArgumentException
-	 *             if given linedimension or columndimension are negative or
-	 *             zero.
+	 * Creates an identity matrix (eye matrix) with the specified dimensions.
+	 * An identity matrix has 1.0s on its main diagonal and 0.0s elsewhere.
+	 *
+	 * @param linedimension   The number of lines (rows).
+	 * @param columndimension The number of columns.
+	 * @return A new identity {@code Matrix}.
+	 * @throws IllegalArgumentException if {@code linedimension} or {@code columndimension} are not positive.
 	 */
-	public static Matrix eye(int linedimension, int columndimension)
-			throws IllegalArgumentException {
-		Matrix matrix = new Matrix(linedimension, columndimension,
-				new Double(0));
-		matrix.setMainDiagonal(new Double(1));
+	public static Matrix eye(int linedimension, int columndimension) throws IllegalArgumentException {
+		Matrix matrix = new Matrix(linedimension, columndimension, 0.0);
+		matrix.setMainDiagonal(1.0);
 		return matrix;
 	}
 
 	/**
-	 * @return eye square matrix with given dimensions.
-	 * @throws IllegalArgumentException
-	 *             if given squareDimension is negative or zero
+	 * Creates a square identity matrix (eye matrix) with the specified dimension.
+	 *
+	 * @param squareDimension The number of lines and columns.
+	 * @return A new square identity {@code Matrix}.
+	 * @throws IllegalArgumentException if {@code squareDimension} is not positive.
 	 */
-	public static Matrix eye(int squareDimension)
-			throws IllegalArgumentException {
+	public static Matrix eye(int squareDimension) throws IllegalArgumentException {
 		return Matrix.eye(squareDimension, squareDimension);
 	}
 
 	/**
-	 * @return zero matrix with given dimensions.
-	 * @throws IllegalArgumentException
-	 *             - if given linedimension or columndimension are negative or
-	 *             zero.
+	 * Creates a matrix of the specified dimensions filled entirely with zeros.
+	 *
+	 * @param linedimension   The number of lines (rows).
+	 * @param columndimension The number of columns.
+	 * @return A new zero {@code Matrix}.
+	 * @throws IllegalArgumentException if {@code linedimension} or {@code columndimension} are not positive.
 	 */
-	public static Matrix zero(int linedimension, int columndimension)
-			throws IllegalArgumentException {
-		return new Matrix(linedimension, columndimension, new Double(0));
+	public static Matrix zero(int linedimension, int columndimension) throws IllegalArgumentException {
+		return new Matrix(linedimension, columndimension, 0.0);
 	}
 
 	/**
-	 * @return square zero matrix with given dimension.
-	 * @throws IllegalArgumentException
-	 *             - if given squareDimension is negative or zero.
+	 * Creates a square matrix of the specified dimension filled entirely with zeros.
+	 *
+	 * @param squareDimension The number of lines and columns.
+	 * @return A new square zero {@code Matrix}.
+	 * @throws IllegalArgumentException if {@code squareDimension} is not positive.
 	 */
-	public static Matrix zero(int squareDimension)
-			throws IllegalArgumentException {
+	public static Matrix zero(int squareDimension) throws IllegalArgumentException {
 		return Matrix.zero(squareDimension, squareDimension);
 	}
 
 	/**
-	 * @return matrix which all values are only 1.
-	 * @throws IllegalArgumentException
-	 *             if given linedimension or columndimension are negative or
-	 *             zero.
+	 * Creates a matrix of the specified dimensions filled entirely with ones.
+	 *
+	 * @param linedimension   The number of lines (rows).
+	 * @param columndimension The number of columns.
+	 * @return A new {@code Matrix} filled with 1.0s.
+	 * @throws IllegalArgumentException if {@code linedimension} or {@code columndimension} are not positive.
 	 */
-	public static Matrix ones(int linedimension, int columndimension)
-			throws IllegalArgumentException {
-		return new Matrix(linedimension, columndimension, new Double(1));
+	public static Matrix ones(int linedimension, int columndimension) throws IllegalArgumentException {
+		return new Matrix(linedimension, columndimension, 1.0);
 	}
 
 	/**
-	 * @return square matrix which all values are only 1.
-	 * @throws IllegalArgumentException
-	 *             if given squareDimension is negative or zero.
+	 * Creates a square matrix of the specified dimension filled entirely with ones.
+	 *
+	 * @param squareDimension The number of lines and columns.
+	 * @return A new square {@code Matrix} filled with 1.0s.
+	 * @throws IllegalArgumentException if {@code squareDimension} is not positive.
 	 */
-	public static Matrix ones(int squareDimension)
-			throws IllegalArgumentException {
+	public static Matrix ones(int squareDimension) throws IllegalArgumentException {
 		return Matrix.ones(squareDimension, squareDimension);
 	}
 
 	/**
-	 * @return square hilbert matrix with given dimension.
-	 * @throws IllegalArgumentException
-	 *             if given squareDimensioni is negative or zero.
+	 * Creates a Hilbert matrix of the specified square dimension.
+	 * A Hilbert matrix has elements H(i,j) = 1 / (i + j - 1) (using 1-based indexing for formula, adjusted for 0-based in code).
+	 *
+	 * @param squareDimension The number of lines and columns.
+	 * @return A new Hilbert {@code Matrix}.
+	 * @throws IllegalArgumentException if {@code squareDimension} is not positive.
 	 */
-	public static Matrix hilbert(int squareDimension)
-			throws IllegalArgumentException {
+	public static Matrix hilbert(int squareDimension) throws IllegalArgumentException {
 		Matrix matrix = new Matrix(squareDimension);
-		for (int i = 0; i < matrix.linedimension; i++)
-			for (int j = 0; j < matrix.columndimension; j++)
-				matrix.setValue(i, j, 1.0 / (i + j + 1));
+		for (int i = 0; i < matrix.linedimension; i++) {
+			for (int j = 0; j < matrix.columndimension; j++) {
+				matrix.setValue(i, j, 1.0 / (i + j + 1)); // 0-based indexing (i+1) + (j+1) - 1 = i+j+1
+			}
+		}
 		return matrix;
 	}
 
 	/**
-	 * @return subtracted matrix (Mathematic operation).
-	 * @throws NullPointerException
-	 *             if given matrix is null.
+	 * Creates a new matrix where each element is {@code value - matrix[i][j]}.
+	 *
+	 * @param value  The scalar value from which matrix elements are subtracted.
+	 * @param matrix The matrix whose elements are subtracted.
+	 * @return A new {@code Matrix} instance with the results.
+	 * @throws NullPointerException if {@code matrix} is null or contains null elements.
 	 */
-	public static Matrix minus(double value, Matrix matrix)
-			throws NullPointerException {
-		Matrix summatrix = new Matrix(matrix.linedimension,
-				matrix.columndimension);
+	public static Matrix minus(double value, Matrix matrix) throws NullPointerException {
+		if (matrix == null) throw new NullPointerException("Input matrix cannot be null.");
+		Matrix resultMatrix = new Matrix(matrix.linedimension, matrix.columndimension);
 		for (int i = 0; i < matrix.linedimension; i++) {
 			for (int j = 0; j < matrix.columndimension; j++) {
-				summatrix.setValue(i, j, value - matrix.getValue(i, j));
+				Double val = matrix.getValue(i,j);
+				if (val == null) throw new NullPointerException("Cannot perform subtraction with null element in input matrix at [" + i + "," + j + "]");
+				resultMatrix.setValue(i, j, value - val);
 			}
 		}
-		return summatrix;
+		return resultMatrix;
 	}
 
 	/**
-	 * @return divided matrix (Mathematic operation).
-	 * @throws NullPointerException
-	 *             if given matrix is null.
+	 * Creates a new matrix where each element is {@code value / matrix[i][j]}.
+	 *
+	 * @param value  The scalar value that is divided by matrix elements.
+	 * @param matrix The matrix whose elements are the divisors.
+	 * @return A new {@code Matrix} instance with the results.
+	 * @throws NullPointerException if {@code matrix} is null or contains null elements.
+	 * @throws ArithmeticException  if any element in {@code matrix} is zero.
 	 */
-	public static Matrix divide(double value, Matrix matrix)
-			throws NullPointerException {
+	public static Matrix divide(double value, Matrix matrix) throws NullPointerException, ArithmeticException {
+		if (matrix == null) throw new NullPointerException("Input matrix cannot be null.");
 		Matrix ans = new Matrix(matrix.linedimension, matrix.columndimension);
 		for (int i = 0; i < matrix.linedimension; i++) {
 			for (int j = 0; j < matrix.columndimension; j++) {
-				ans.setValue(i, j, value / matrix.getValue(i, j));
+				Double val = matrix.getValue(i,j);
+				if (val == null) throw new NullPointerException("Cannot perform division with null element in input matrix at [" + i + "," + j + "]");
+				if (val == 0) {
+					throw new ArithmeticException("Division by zero at index [" + i + "," + j + "]");
+				}
+				ans.setValue(i, j, value / val);
 			}
 		}
 		return ans;
 	}
 
 	/**
-	 * @return matrix with given dimension which data will be filled with random
-	 *         numbers.
-	 * @throws IllegalArgumentException
-	 *             if dimensions are negative or zero.
+	 * Creates a matrix of specified dimensions filled with random double values between 0.0 (inclusive) and 1.0 (exclusive).
+	 *
+	 * @param linedimension   The number of lines (rows).
+	 * @param columndimension The number of columns.
+	 * @return A new {@code Matrix} with random values.
+	 * @throws IllegalArgumentException if dimensions are not positive.
 	 */
-	public static Matrix random(int linedimension, int columndimension)
-			throws IllegalArgumentException {
+	public static Matrix random(int linedimension, int columndimension) throws IllegalArgumentException {
 		Matrix m = new Matrix(linedimension, columndimension);
 		Random random = new Random();
 		for (int i = 0; i < m.linedimension; i++) {
@@ -1084,41 +1108,43 @@ public class Matrix extends DataMatrix<Double> {
 	}
 
 	/**
-	 * @return square matrix with given dimension which data will be filled with
-	 *         random numbers.
-	 * @throws IllegalArgumentException
-	 *             if dimension is negative or zero.
+	 * Creates a square matrix of specified dimension filled with random double values.
+	 *
+	 * @param squareDimension The number of lines and columns.
+	 * @return A new square {@code Matrix} with random values.
+	 * @throws IllegalArgumentException if dimension is not positive.
 	 */
-	public static Matrix random(int squareDimension)
-			throws IllegalArgumentException {
+	public static Matrix random(int squareDimension) throws IllegalArgumentException {
 		return Matrix.random(squareDimension, squareDimension);
 	}
 
 	/**
-	 * @return matrix with random dimensions (maximum 5) which data also will be
-	 *         filled with random numbers.
+	 * Creates a matrix with random dimensions (each up to 5, at least 1) filled with random double values.
+	 *
+	 * @return A new {@code Matrix} with random dimensions and values.
 	 */
 	public static Matrix random() {
 		Random random = new Random();
-		int lineDimension = random.nextInt();
-		lineDimension = lineDimension > 5 ? 5 : lineDimension;
-		int columnDimension = random.nextInt();
-		columnDimension = columnDimension > 5 ? 5 : columnDimension;
-		return Matrix.random(lineDimension > 0 ? lineDimension : 1,
-				columnDimension > 0 ? columnDimension : 1);
+		int lineDimension = random.nextInt(5) + 1; // Ensure at least 1, max 5
+		int columnDimension = random.nextInt(5) + 1; // Ensure at least 1, max 5
+		return Matrix.random(lineDimension, columnDimension);
 	}
 
 	/**
-	 * @return matrix with given dimension which data will be filled with random
-	 *         numbers in given range.
-	 * @throws IllegalArgumentException
-	 *             if dimensions are negative or zero, or if start parameter is
-	 *             more then end parameter.
+	 * Creates a matrix of specified dimensions filled with random double values within the range [start, end).
+	 *
+	 * @param linedimension   The number of lines.
+	 * @param columndimension The number of columns.
+	 * @param start           The inclusive lower bound of the random range.
+	 * @param end             The exclusive upper bound of the random range.
+	 * @return A new {@code Matrix} with random values in the specified range.
+	 * @throws IllegalArgumentException if dimensions are not positive, or if {@code start >= end}.
 	 */
-	public static Matrix randomIn(int linedimension, int columndimension,
-			int start, int end) throws IllegalArgumentException {
-		if (end <= start)
+	public static Matrix randomIn(int linedimension, int columndimension, int start, int end)
+			throws IllegalArgumentException {
+		if (end <= start) {
 			throw new IllegalArgumentException(MatrixExceptionMessages.RANDOM);
+		}
 		Random r = new Random();
 		Matrix m = new Matrix(linedimension, columndimension);
 		for (int i = 0; i < m.linedimension; i++) {
@@ -1130,238 +1156,232 @@ public class Matrix extends DataMatrix<Double> {
 	}
 
 	/**
-	 * @return square matrix with given dimension which data will be filled with
-	 *         random numbers in given range.
-	 * @throws IllegalArgumentException
-	 *             if dimension is negative or zero, or if start parameter is
-	 *             more then end parameter.
+	 * Creates a square matrix of specified dimension filled with random double values within the range [start, end).
+	 *
+	 * @param squareDimension The number of lines and columns.
+	 * @param start           The inclusive lower bound.
+	 * @param end             The exclusive upper bound.
+	 * @return A new square {@code Matrix} with random values in the range.
+	 * @throws IllegalArgumentException if dimension is not positive, or if {@code start >= end}.
 	 */
-	public static Matrix randomIn(int squareDimension, int start, int end)
-			throws IllegalArgumentException {
+	public static Matrix randomIn(int squareDimension, int start, int end) throws IllegalArgumentException {
 		return Matrix.randomIn(squareDimension, squareDimension, start, end);
 	}
 
 	/**
-	 * @return matrix with random dimensions (maximum 5) which data also will be
-	 *         filled with random numbers in given range.
-	 * @throws IllegalArgumentException
-	 *             if start parameter is more then end parameter.
+	 * Creates a matrix with random dimensions (each up to 5, at least 1) filled with random values in [start, end).
+	 *
+	 * @param start The inclusive lower bound.
+	 * @param end   The exclusive upper bound.
+	 * @return A new {@code Matrix} with random dimensions and values in the range.
+	 * @throws IllegalArgumentException if {@code start >= end}.
 	 */
-	public static Matrix randomIn(int start, int end)
-			throws IllegalArgumentException {
+	public static Matrix randomIn(int start, int end) throws IllegalArgumentException {
 		Random random = new Random();
-		int lineDimension = random.nextInt();
-		lineDimension = lineDimension > 5 ? 5 : lineDimension;
-		int columnDimension = random.nextInt();
-		columnDimension = columnDimension > 5 ? 5 : columnDimension;
-		return Matrix.randomIn(lineDimension > 0 ? lineDimension : 1,
-				columnDimension > 0 ? columnDimension : 1, start, end);
+		int lineDimension = random.nextInt(5) + 1;
+		int columnDimension = random.nextInt(5) + 1;
+		return Matrix.randomIn(lineDimension, columnDimension, start, end);
 	}
 
 	/**
-	 * @param matrixType
-	 *            : scalar , vector , zero and so on ...
-	 * @param dimensions
-	 *            can be null if you want scalar or just one parameter if you
-	 *            want square matrix , or tow parameters.
-	 * @return matrix which you want with given dimensions.
-	 * @throws NullPointerException
-	 *             if dimensions is null except if you want scalar.
-	 * @throws IllegalArgumentException
-	 *             if dimension(s) is(are) negative or zero.
+	 * Creates a matrix of a specific type (e.g., scalar, vector, zero, eye) with specified dimensions.
+	 *
+	 * @param matrixType The type of matrix to create (from {@link MatrixTypes}).
+	 * @param dimensions Variable argument for dimensions:
+	 *                   <ul>
+	 *                   <li>For {@code SCALAR}: no dimension needed.</li>
+	 *                   <li>For {@code VECTOR}, {@code COLUMN_VECTOR}, {@code HILBERT}, or square {@code MATRIX}, {@code ZERO}, {@code EYE}: one dimension (length/size).</li>
+	 *                   <li>For rectangular {@code MATRIX}, {@code ZERO}, {@code EYE}: two dimensions (lines, columns).</li>
+	 *                   </ul>
+	 * @return The created {@code Matrix}.
+	 * @throws NullPointerException     if {@code matrixType} is null, or if {@code dimensions} is null when expected.
+	 * @throws IllegalArgumentException if dimensions are invalid for the given matrix type (e.g., negative, zero, or wrong number of dimensions).
 	 */
 	public static Matrix create(MatrixTypes matrixType, int... dimensions)
 			throws NullPointerException, IllegalArgumentException {
+		if (matrixType == null) throw new NullPointerException("MatrixType cannot be null.");
+		// Basic dimension validation
+		if (dimensions != null) {
+			for (int dim : dimensions) {
+				if (dim <= 0) throw new IllegalArgumentException("Dimensions must be positive.");
+			}
+		}
+
 		switch (matrixType) {
-		case scalar:
-			return new Matrix();
-		case vector:
+		case SCALAR:
+			return new Matrix(); // 1x1 null
+		case VECTOR:
+			if (dimensions == null || dimensions.length != 1) throw new IllegalArgumentException("Vector requires one dimension parameter.");
 			return new Matrix(1, dimensions[0]);
-		case columnVector:
+		case COLUMN_VECTOR:
+			if (dimensions == null || dimensions.length != 1) throw new IllegalArgumentException("Column vector requires one dimension parameter.");
 			return new Matrix(dimensions[0], 1);
-		case hilbert:
+		case HILBERT:
+			if (dimensions == null || dimensions.length != 1) throw new IllegalArgumentException("Hilbert matrix requires one dimension (square).");
 			return Matrix.hilbert(dimensions[0]);
-		case matrix: {
+		case MATRIX:
+			if (dimensions == null || dimensions.length == 0) throw new IllegalArgumentException("Matrix type requires at least one dimension.");
 			if (dimensions.length > 1) {
 				return new Matrix(dimensions[0], dimensions[1]);
 			}
-			return new Matrix(dimensions[0]);
-		}
-		case zero: {
+			return new Matrix(dimensions[0]); // Square matrix
+		case ZERO:
+			if (dimensions == null || dimensions.length == 0) throw new IllegalArgumentException("Zero matrix type requires at least one dimension.");
 			if (dimensions.length > 1) {
 				return Matrix.zero(dimensions[0], dimensions[1]);
 			}
-			return Matrix.zero(dimensions[0]);
-		}
-		case eye: {
+			return Matrix.zero(dimensions[0]); // Square zero matrix
+		case EYE:
+			if (dimensions == null || dimensions.length == 0) throw new IllegalArgumentException("Eye matrix type requires at least one dimension.");
 			if (dimensions.length > 1) {
 				return Matrix.eye(dimensions[0], dimensions[1]);
 			}
-			return Matrix.eye(dimensions[0]);
-		}
-		default: {
+			return Matrix.eye(dimensions[0]); // Square eye matrix
+		default: // ONES or any other, treat as ONES as per original logic
+			if (dimensions == null || dimensions.length == 0) throw new IllegalArgumentException("This matrix type requires at least one dimension.");
 			if (dimensions.length > 1) {
 				return Matrix.ones(dimensions[0], dimensions[1]);
 			}
-			return Matrix.ones(dimensions[0]);
-		}
+			return Matrix.ones(dimensions[0]); // Square ones matrix
 		}
 	}
 
 	/**
-	 * @param matrixType
-	 *            only : scalar , vector , columnVector and matrix.
-	 * @param defaultValue
-	 *            matrix will be field with default value.
-	 * @param dimensions
-	 * @return matrix which you want with given dimensions.
-	 * @throws NullPointerException
-	 *             if dimensions is null except if you want scalar.
-	 * @throws IllegalArgumentException
-	 *             if dimension(s) is(are) negative or zero.
+	 * Creates a matrix of a specific type, filled with a {@code defaultValue}.
+	 *
+	 * @param matrixType   The type of matrix (currently supports {@code SCALAR}, {@code VECTOR}, {@code COLUMN_VECTOR}, or defaults to general {@code MATRIX}).
+	 * @param defaultValue The value to fill the matrix elements with.
+	 * @param dimensions   Variable argument for dimensions, similar to {@link #create(MatrixTypes, int...)}.
+	 * @return The created {@code Matrix}.
+	 * @throws NullPointerException     if {@code matrixType} is null, or if {@code dimensions} is null when expected.
+	 * @throws IllegalArgumentException if dimensions are invalid.
 	 */
-	public static Matrix create(MatrixTypes matrixType, double defaultValue,
-			int... dimensions) throws NullPointerException,
-			IllegalArgumentException {
+	public static Matrix create(MatrixTypes matrixType, double defaultValue, int... dimensions)
+			throws NullPointerException, IllegalArgumentException {
+		if (matrixType == null) throw new NullPointerException("MatrixType cannot be null.");
+		if (dimensions != null) {
+			for (int dim : dimensions) {
+				if (dim <= 0) throw new IllegalArgumentException("Dimensions must be positive.");
+			}
+		}
+
 		switch (matrixType) {
-		case scalar:
+		case SCALAR:
 			return new Matrix(defaultValue);
-		case vector:
+		case VECTOR:
+			if (dimensions == null || dimensions.length != 1) throw new IllegalArgumentException("Vector requires one dimension parameter.");
 			return new Matrix(1, dimensions[0], defaultValue);
-		case columnVector:
+		case COLUMN_VECTOR:
+			if (dimensions == null || dimensions.length != 1) throw new IllegalArgumentException("Column vector requires one dimension parameter.");
 			return new Matrix(dimensions[0], 1, defaultValue);
-		default: {
+		default: // MATRIX, HILBERT, ZERO, EYE, ONES (Hilbert, Zero, Eye, Ones are special cases of filled matrices)
+			if (dimensions == null || dimensions.length == 0) throw new IllegalArgumentException("This matrix type requires at least one dimension.");
 			if (dimensions.length > 1) {
 				return new Matrix(dimensions[0], dimensions[1], defaultValue);
 			}
-			return new Matrix(dimensions[0], defaultValue);
-		}
+			return new Matrix(dimensions[0], defaultValue); // Square matrix
 		}
 	}
 
 	/**
-	 * @return block diagonal matrix.
-	 *         <p>
-	 *         for example: Matrix.diagonal(3, 3, 3, 1) will return:
-	 *         </p>
-	 *         <p>
-	 *         1.0 1.0 0.0</br>1.0 1.0 1.0</br>0.0 1.0 1.0
-	 *         </p>
-	 * @throws IllegalArgumentException
-	 *             if given linedimension or columndimension are negative or
-	 *             zero or if diagonalnumber is more or equal than 2 * this
-	 *             matrix's min dimension or diagonalnumber is even!
+	 * Creates a block diagonal matrix where a specified number of diagonals around the main diagonal are filled with {@code value},
+	 * and other elements are zero.
+	 * <p>
+	 * Example: {@code Matrix.diagonal(3, 3, 3, 1.0)} (3x3 matrix, 3 diagonals including main) might produce:
+	 * <pre>
+	 * 1.0  1.0  0.0
+	 * 1.0  1.0  1.0
+	 * 0.0  1.0  1.0
+	 * </pre>
+	 *
+	 * @param linedimension    Number of lines.
+	 * @param columndimension  Number of columns.
+	 * @param diagonalnumber   Total number of diagonals to be filled (must be odd, e.g., 1 for main only, 3 for main and adjacent).
+	 * @param value            The value to fill the specified diagonals with.
+	 * @return A new block diagonal {@code Matrix}.
+	 * @throws IllegalArgumentException if dimensions are not positive, or if {@code diagonalnumber} is invalid
+	 *                                  (e.g., even, too large for matrix dimensions, or not positive).
 	 */
-	public static Matrix diagonal(int linedimension, int columndimension,
-			int diagonalnumber, double value) throws IllegalArgumentException {
-		// diagonalnumber ar unda iyos luwi
-		Matrix m = new Matrix(linedimension, columndimension);
-		if (diagonalnumber >= (2 * m.getMinDimension())
-				|| (diagonalnumber % 2 == 0))
-			throw new IllegalArgumentException(MatrixExceptionMessages.DIAGONAL);
-		m.fillWith0();
-		m.setDiagonal(0, (Double) value);
-		for (int i = 0, j = 0; i < (diagonalnumber / 2); i++, j--) {
-			m.setDiagonal(i + 1, (Double) value);
-			m.setDiagonal(j - 1, (Double) value);
+	public static Matrix diagonal(int linedimension, int columndimension, int diagonalnumber, double value)
+			throws IllegalArgumentException {
+		Matrix m = new Matrix(linedimension, columndimension); // Initializes with nulls
+		if (diagonalnumber >= (2 * m.getMinDimension()) || (diagonalnumber % 2 == 0) || diagonalnumber < 1) {
+			throw new IllegalArgumentException(MatrixExceptionMessages.DIAGONAL + " Number of diagonals must be odd, positive, and within matrix limits.");
 		}
-		return m;
-	}
-
-	/**
-	 * @return block diagonal matrix.
-	 *         <p>
-	 *         for example: Matrix.diagonal(3, 3, 1) will return:
-	 *         </p>
-	 *         <p>
-	 *         1.0 1.0 0.0</br> 1.0 1.0 1.0 </br> 0.0 1.0 1.0
-	 *         </p>
-	 * @throws IllegalArgumentException
-	 *             if given squareDimension is negative or zero or if
-	 *             diagonalnumber is more or equal than 2 * this matrix's min
-	 *             dimension or diagonalnumber is even!
-	 */
-	public static Matrix diagonal(int squareDimension, int diagonalnumber,
-			double value) throws IllegalArgumentException {
-		return Matrix.diagonal(squareDimension, squareDimension,
-				diagonalnumber, (Double) value);
-	}
-
-	/**
-	 * @return block diagonal matrix.
-	 *         <p>
-	 *         for example: Matrix.diagonal2(3, 3, 3, 1) will return:
-	 *         </p>
-	 *         <p>
-	 *         0.0 1.0 1.0</br>1.0 1.0 1.0</br>1.0 1.0 0.0
-	 *         </p>
-	 * @throws IllegalArgumentException
-	 *             if given linedimension or columndimension are negative or
-	 *             zero or if diagonalnumber is more or equal than 2 * this
-	 *             matrix's min dimension or diagonalnumber is even!
-	 */
-	public static Matrix diagonal2(int linedimension, int columndimension,
-			int diagonalnumber, double value) throws IllegalArgumentException {
-		Matrix m = new Matrix(linedimension, columndimension);
-		if (diagonalnumber >= (2 * m.getMinDimension())
-				|| (diagonalnumber % 2 == 0))
-			throw new IllegalArgumentException(MatrixExceptionMessages.DIAGONAL);
-		m.fillWith0();
-		m.setDiagonal2(0, (Double) value);
-		for (int i = 0, j = 0; i < (diagonalnumber / 2); i++, j--) {
-			m.setDiagonal2(i + 1, (Double) value);
-			m.setDiagonal2(j - 1, (Double) value);
+		m.fillWith0(); // Fill with zeros first
+		m.setDiagonal(0, value); // Main diagonal
+		for (int i = 1; i <= (diagonalnumber / 2); i++) {
+			m.setDiagonal(i, value);  // Upper diagonals
+			m.setDiagonal(-i, value); // Lower diagonals
 		}
 		return m;
 	}
 
 	/**
-	 * @return block diagonal matrix.
-	 *         <p>
-	 *         for example: Matrix.diagonal2(3, 3, 1) will return:
-	 *         </p>
-	 *         <p>
-	 *         0.0 1.0 1.0</br>1.0 1.0 1.0</br>1.0 1.0 0.0
-	 *         </p>
-	 * @throws IllegalArgumentException
-	 *             if given squareDimension is negative or zero or if
-	 *             diagonalnumber is more or equal than 2 * this matrix's min
-	 *             dimension or diagonalnumber is even!
+	 * Creates a square block diagonal matrix.
+	 *
+	 * @param squareDimension The number of lines and columns.
+	 * @param diagonalnumber  Total number of diagonals to fill (must be odd).
+	 * @param value           The value for the diagonals.
+	 * @return A new square block diagonal {@code Matrix}.
+	 * @throws IllegalArgumentException if arguments are invalid as per {@link #diagonal(int, int, int, double)}.
 	 */
-	public static Matrix diagonal2(int squareDimension, int diagonalnumber,
-			double value) throws IllegalArgumentException {
-		return Matrix.diagonal2(squareDimension, squareDimension,
-				diagonalnumber, (Double) value);
+	public static Matrix diagonal(int squareDimension, int diagonalnumber, double value)
+			throws IllegalArgumentException {
+		return Matrix.diagonal(squareDimension, squareDimension, diagonalnumber, value);
 	}
 
+	/**
+	 * Creates a block anti-diagonal matrix (diagonals perpendicular to the main anti-diagonal).
+	 * <p>
+	 * Example: {@code Matrix.diagonal2(3, 3, 3, 1.0)} might produce:
+	 * <pre>
+	 * 0.0  1.0  1.0
+	 * 1.0  1.0  1.0
+	 * 1.0  1.0  0.0
+	 * </pre>
+	 *
+	 * @param linedimension   Number of lines.
+	 * @param columndimension Number of columns.
+	 * @param diagonalnumber  Total number of anti-diagonals to fill (must be odd and positive).
+	 * @param value           The value for these anti-diagonals.
+	 * @return A new block anti-diagonal {@code Matrix}.
+	 * @throws IllegalArgumentException if arguments are invalid (e.g. dimensions not positive, diagonalnumber even/too large/not positive).
+	 */
+	public static Matrix diagonal2(int linedimension, int columndimension, int diagonalnumber, double value)
+			throws IllegalArgumentException {
+		Matrix m = new Matrix(linedimension, columndimension);
+		if (diagonalnumber >= (2 * m.getMinDimension()) || (diagonalnumber % 2 == 0) || diagonalnumber < 1) {
+			throw new IllegalArgumentException(MatrixExceptionMessages.DIAGONAL + " Number of diagonals must be odd, positive, and within matrix limits.");
+		}
+		m.fillWith0();
+		m.setDiagonal2(0, value); // Main anti-diagonal
+		for (int i = 1; i <= (diagonalnumber / 2); i++) {
+			m.setDiagonal2(i, value);  // Anti-diagonals "above" (towards top-right)
+			m.setDiagonal2(-i, value); // Anti-diagonals "below" (towards bottom-left)
+		}
+		return m;
+	}
+
+	/**
+	 * Creates a square block anti-diagonal matrix.
+	 *
+	 * @param squareDimension The number of lines and columns.
+	 * @param diagonalnumber  Total number of anti-diagonals to fill (must be odd and positive).
+	 * @param value           The value for these anti-diagonals.
+	 * @return A new square block anti-diagonal {@code Matrix}.
+	 * @throws IllegalArgumentException if arguments are invalid.
+	 */
+	public static Matrix diagonal2(int squareDimension, int diagonalnumber, double value)
+			throws IllegalArgumentException {
+		return Matrix.diagonal2(squareDimension, squareDimension, diagonalnumber, value);
+	}
+
+	/**
+	 * Main method for demonstration or testing of Matrix functionalities.
+	 * @param argss Command line arguments (not used by this demonstration).
+	 */
 	public static void main(String [] argss) {
-		
+		// Example usage of the Matrix class
 		Matrix matrix = new Matrix(3);
 		matrix.setValue(0, 0, 3.0);
-		matrix.setValue(0, 1, 2.0);
-		matrix.setValue(0, 2, 1.0);
-		matrix.setValue(1, 0, 3.0);
-		matrix.setValue(1, 1, 4.0);
-		matrix.setValue(1, 2, 5.0);
-		matrix.setValue(2, 0, 0.0);
-		matrix.setValue(2, 1, 2.0);
-		matrix.setValue(2, 2, 4.0);
-		
-		System.out.println(matrix);
-		
-		Matrix answers = new Matrix(3, 1);
-		answers.setValue(0, 0, 2.6);
-		answers.setValue(1, 0, 4.0);
-		answers.setValue(2, 0, 1.4);
-		
-		System.out.println(answers);
-		
-		Matrix solveLinearSystem = matrix.solveLinearSystem(answers);
-		
-		System.out.println(solveLinearSystem);
-		
-		System.out.println("test");	
-		
-	}
-	
-}
